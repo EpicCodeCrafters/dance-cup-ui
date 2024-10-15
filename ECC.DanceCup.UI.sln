@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2BD96CBE-B703-4BDB-80FD-143370CD5748}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{7640902C-3A96-4F43-A345-90F72EF4582A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		README.md = README.md
+		.github\workflows\github-ci.yml = .github\workflows\github-ci.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI", "src\ECC.DanceCup.UI\ECC.DanceCup.UI.csproj", "{D0DB7907-A3E3-49D5-81B3-B7127B29C319}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalServices", "ExternalServices", "{A6623984-3B7C-4337-BA77-9C171F338A73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.ExternalServices.DanceCupAuth", "src\ECC.DanceCup.UI.ExternalServices.DanceCupAuth\ECC.DanceCup.UI.ExternalServices.DanceCupAuth.csproj", "{2A589526-D76E-493B-BB0A-01E6ED175A50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.ExternalServices.DanceCupApi", "src\ECC.DanceCup.UI.ExternalServices.DanceCupApi\ECC.DanceCup.UI.ExternalServices.DanceCupApi.csproj", "{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0DB7907-A3E3-49D5-81B3-B7127B29C319} = {2BD96CBE-B703-4BDB-80FD-143370CD5748}
+		{A6623984-3B7C-4337-BA77-9C171F338A73} = {2BD96CBE-B703-4BDB-80FD-143370CD5748}
+		{2A589526-D76E-493B-BB0A-01E6ED175A50} = {A6623984-3B7C-4337-BA77-9C171F338A73}
+		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D} = {A6623984-3B7C-4337-BA77-9C171F338A73}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0DB7907-A3E3-49D5-81B3-B7127B29C319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DB7907-A3E3-49D5-81B3-B7127B29C319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DB7907-A3E3-49D5-81B3-B7127B29C319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DB7907-A3E3-49D5-81B3-B7127B29C319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A589526-D76E-493B-BB0A-01E6ED175A50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A589526-D76E-493B-BB0A-01E6ED175A50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A589526-D76E-493B-BB0A-01E6ED175A50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A589526-D76E-493B-BB0A-01E6ED175A50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

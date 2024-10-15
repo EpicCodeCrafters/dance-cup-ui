@@ -1,0 +1,73 @@
+﻿syntax = "proto3";
+
+package ECC.DanceCup.Api.Presentation.Grpc;
+
+option csharp_namespace = "ECC.DanceCup.Api.Presentation.Grpc";
+
+import "google/protobuf/timestamp.proto";
+
+service DanceCupApi {
+    rpc GetDances (GetDancesRequest) returns (GetDancesResponse);
+
+    rpc CreateReferee (CreateRefereeRequest) returns (CreateRefereeResponse);
+
+    rpc CreateTournament (CreateTournamentRequest) returns (CreateTournamentResponse);
+    rpc StartTournamentRegistration (StartTournamentRegistrationRequest) returns (StartTournamentRegistrationResponse);
+    rpc FinishTournamentRegistration (FinishTournamentRegistrationRequest) returns (FinishTournamentRegistrationResponse);
+    rpc ReopenTournamentRegistration (ReopenTournamentRegistrationRequest) returns (ReopenTournamentRegistrationResponse);
+}
+
+message GetDancesRequest { }
+
+message GetDancesResponse {
+    repeated Dance dances = 1;
+}
+
+message Dance {
+    int64 id = 1;
+    string short_name = 2;
+    string name = 3;
+}
+
+message CreateRefereeRequest {
+    string full_name = 1;
+}
+
+message CreateRefereeResponse {
+    int64 referee_id = 1;
+}
+
+message CreateTournamentRequest {
+    int64 user_id = 1;
+    string name = 2;
+    google.protobuf.Timestamp date = 3;
+    repeated CreateCategoryModel create_category_models = 4;
+}
+
+message CreateTournamentResponse {
+    int64 tournament_id = 1;
+}
+
+message CreateCategoryModel {
+    string name = 1;
+    repeated int64 dances_ids = 2;
+    repeated int64 referees_ids = 3;
+}
+
+message StartTournamentRegistrationRequest {
+    int64 tournament_id = 1;
+}
+
+message StartTournamentRegistrationResponse { }
+
+message FinishTournamentRegistrationRequest {
+    int64 tournament_id = 1;
+}
+
+message FinishTournamentRegistrationResponse { }
+
+message ReopenTournamentRegistrationRequest {
+    int64 tournament_id = 1;
+}
+
+message ReopenTournamentRegistrationResponse { }

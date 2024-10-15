@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package ECC.DanceCup.Auth.Presentation.Grpc;
+
+option csharp_namespace = "ECC.DanceCup.Auth.Presentation.Grpc";
+
+service DanceCupAuth {
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+    rpc GetUserToken (GetUserTokenRequest) returns (GetUserTokenResponse);
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message CreateUserResponse {
+    int64 user_id = 1;
+    string token = 2;
+}
+
+message GetUserTokenRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message GetUserTokenResponse {
+    string token = 1;
+}

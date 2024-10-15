@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+
+  dance-cup-api-db:
+    container_name: dance-cup-api-db
+    image: postgres
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dance-cup-api
+      PGDATA: /data/postgres
+    command: -c log_statement=all
+    volumes:
+      - dance-cup-api-db-volume:/data/postgres
+
+  dance-cup-auth-db:
+    container_name: dance-cup-auth-db
+    image: postgres
+    ports:
+      - 25432:5432
+    environment:
+      POSTGRES_USER: postgres-user
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dance-cup-auth
+      PGDATA: /data/postgres
+    command: -c log_statement=all
+    volumes:
+      - dance-cup-auth-db-volume:/data/postgres
+  
+  dance-cup-api:
+    container_name: dance-cup-api
+    build:
+      context: ./../dance-cup-api
+      dockerfile: ./Dockerfile
+    depends_on:
+      - dance-cup-api-db
+    ports:
+      - 81:80
+    environment:
+      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+
+  dance-cup-auth:
+    container_name: dance-cup-auth
+    build:
+      context: ./../dance-cup-auth
+      dockerfile: ./Dockerfile
+    depends_on:
+      - dance-cup-auth-db
+    ports:
+      - 82:80
+    environment:
+      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      StorageOptions__ConnectionString: "Host=dance-cup-auth-db; Port=5432; Database=dance-cup-auth; Username=postgres-user; Password=postgres;"
+
+volumes:
+  dance-cup-api-db-volume:
+  dance-cup-auth-db-volume:
