@@ -34,7 +34,7 @@ public static class Registrar
         await using var scope = serviceProvider.CreateAsyncScope();
 
         var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-        var logger = loggerFactory.CreateLogger(nameof(Registrar));
+        var logger = loggerFactory.CreateLogger(typeof(Registrar).FullName ?? nameof(Registrar));
 
         try
         {
