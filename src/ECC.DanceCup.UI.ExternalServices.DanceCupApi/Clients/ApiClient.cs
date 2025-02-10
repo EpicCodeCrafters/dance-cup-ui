@@ -21,9 +21,9 @@ public class ApiClient : IApiClient
             
             return response;
         }
-        catch (RpcException exception)
+        catch (RpcException)
         {
-            return Result.Fail(exception.Message);
+            return Result.Fail("Не удалось получить список танцев");
         }
     }
 }
