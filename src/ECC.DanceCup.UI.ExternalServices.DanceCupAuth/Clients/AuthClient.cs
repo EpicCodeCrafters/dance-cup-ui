@@ -21,7 +21,7 @@ public class AuthClient : IAuthClient
 
             return response;
         }
-        catch (RpcException exception) when (exception.StatusCode == StatusCode.InvalidArgument)
+        catch (RpcException exception) when (exception.StatusCode is StatusCode.InvalidArgument)
         {
             return Result.Fail(exception.Message);
         }
@@ -39,15 +39,15 @@ public class AuthClient : IAuthClient
             
             return response;
         }
-        catch (RpcException exception) when (exception.StatusCode == StatusCode.Unauthenticated)
+        catch (RpcException exception) when (exception.StatusCode is StatusCode.Unauthenticated)
         {
             return Result.Fail(exception.Message);
         }
-        catch (RpcException exception) when (exception.StatusCode == StatusCode.NotFound)
+        catch (RpcException exception) when (exception.StatusCode is StatusCode.NotFound)
         {
             return Result.Fail(exception.Message);
         }
-        catch (RpcException exception) when (exception.StatusCode == StatusCode.InvalidArgument)
+        catch (RpcException exception) when (exception.StatusCode is StatusCode.InvalidArgument)
         {
             return Result.Fail(exception.Message);
         }
