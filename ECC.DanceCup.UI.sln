@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.ExternalSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.ExternalServices.DanceCupApi", "src\ECC.DanceCup.UI.ExternalServices.DanceCupApi\ECC.DanceCup.UI.ExternalServices.DanceCupApi.csproj", "{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.Utils", "src\ECC.DanceCup.UI.Utils\ECC.DanceCup.UI.Utils.csproj", "{CB0EE550-3608-49F3-9F83-7C5F93D50E10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,7 @@ Global
 		{A6623984-3B7C-4337-BA77-9C171F338A73} = {2BD96CBE-B703-4BDB-80FD-143370CD5748}
 		{2A589526-D76E-493B-BB0A-01E6ED175A50} = {A6623984-3B7C-4337-BA77-9C171F338A73}
 		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D} = {A6623984-3B7C-4337-BA77-9C171F338A73}
+		{CB0EE550-3608-49F3-9F83-7C5F93D50E10} = {2BD96CBE-B703-4BDB-80FD-143370CD5748}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D0DB7907-A3E3-49D5-81B3-B7127B29C319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -46,5 +49,9 @@ Global
 		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B1FCE99-5066-4325-91D5-6DE7B95D0B4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB0EE550-3608-49F3-9F83-7C5F93D50E10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB0EE550-3608-49F3-9F83-7C5F93D50E10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB0EE550-3608-49F3-9F83-7C5F93D50E10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB0EE550-3608-49F3-9F83-7C5F93D50E10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
