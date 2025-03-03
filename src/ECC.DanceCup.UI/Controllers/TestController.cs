@@ -79,4 +79,24 @@ public class TestController : Controller
         
         return Json(getDancesResult.Value);
     }
+
+    public async Task<IActionResult> HighLoad()
+    {
+        await Parallel.ForEachAsync(
+            Enumerable.Range(1, 1000),
+            new ParallelOptions { MaxDegreeOfParallelism = 100 },
+            (_, _) => new ValueTask(
+                _authClient.CreateUserAsync(
+                    new CreateUserRequest
+                    {
+                        Username = Guid.NewGuid().ToString(),
+                        Password = Guid.NewGuid().ToString()
+                    },
+                    HttpContext.RequestAborted
+                )
+            )
+        );
+
+        return Redirect("/Home/Index");
+    }
 }

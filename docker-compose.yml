@@ -1,6 +1,32 @@
-version: "3.8"
-
 services:
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - kafka
+    entrypoint: [ "sh", "-c", "sleep 10 && kafka-topics --create --if-not-exists --bootstrap-server kafka:9092 --replication-factor 1 --partitions 3 --topic dance_cup_events && echo 'Топик создан'" ]
 
   dance-cup-api-db:
     container_name: dance-cup-api-db
@@ -37,11 +63,15 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - dance-cup-api-db
+      - kafka-init
     ports:
       - 81:80
     environment:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      KafkaOptions__BootstrapServers: "kafka:9092"
+      KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
+      KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
 
   dance-cup-auth:
     container_name: dance-cup-auth
@@ -50,6 +80,7 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - dance-cup-auth-db
+      - kafka-init
     ports:
       - 82:80
     environment:
@@ -59,6 +90,8 @@ services:
       SecurityOptions__Audience: "dance-cup-audience"
       SecurityOptions__Issuer: "dance-cup-issuer"
       SecurityOptions__TokenExpiresMinutes: 60
+      KafkaOptions__BootstrapServers: "kafka:9092"
+      KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
 
 volumes:
   dance-cup-api-db-volume:
