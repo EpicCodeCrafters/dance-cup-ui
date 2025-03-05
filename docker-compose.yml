@@ -60,7 +60,7 @@ services:
       - kafka1
       - kafka2
       - kafka3
-    entrypoint: [ "sh", "-c", "sleep 20 && kafka-topics --create --if-not-exists --bootstrap-server kafka1:9092,kafka2:9093,kafka3:9094 --replication-factor 3 --partitions 3 --topic dance_cup_events && echo 'Топик создан'" ]
+    entrypoint: [ "sh", "-c", "sleep 10 && kafka-topics --create --if-not-exists --bootstrap-server kafka1:9092,kafka2:9093,kafka3:9094 --replication-factor 3 --partitions 3 --topic dance_cup_events && echo 'Топик создан'" ]
 
   dance-cup-api-db:
     container_name: dance-cup-api-db
@@ -103,7 +103,7 @@ services:
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
-    entrypoint: [ "sh", "-c", "sleep 30 && dotnet ECC.DanceCup.Api.dll --migrate"]
+    entrypoint: [ "sh", "-c", "sleep 10 && dotnet ECC.DanceCup.Api.dll --migrate"]
   
   dance-cup-api:
     container_name: dance-cup-api
@@ -175,7 +175,7 @@ services:
       SecurityOptions__TokenExpiresMinutes: 60
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
-    entrypoint: [ "sh", "-c", "sleep 30 && dotnet ECC.DanceCup.Auth.dll --migrate"]
+    entrypoint: [ "sh", "-c", "sleep 10 && dotnet ECC.DanceCup.Auth.dll --migrate"]
   
   dance-cup-auth:
     container_name: dance-cup-auth
