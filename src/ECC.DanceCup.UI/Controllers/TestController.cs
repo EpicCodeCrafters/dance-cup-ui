@@ -83,8 +83,12 @@ public class TestController : Controller
     public async Task<IActionResult> HighLoad()
     {
         await Parallel.ForEachAsync(
-            Enumerable.Range(1, 1000),
-            new ParallelOptions { MaxDegreeOfParallelism = 100 },
+            Enumerable.Range(1, 100),
+            new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 16,
+                CancellationToken = HttpContext.RequestAborted
+            },
             (_, _) => new ValueTask(
                 _authClient.CreateUserAsync(
                     new CreateUserRequest
