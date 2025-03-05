@@ -23,6 +23,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   kafka-init:
+    container_name: kafka-init
     image: confluentinc/cp-kafka:7.4.4
     depends_on:
       - kafka
@@ -56,6 +57,21 @@ services:
     volumes:
       - dance-cup-auth-db-volume:/data/postgres
   
+  dance-cup-api-migrate:
+    container_name: dance-cup-api-migrate
+    build:
+      context: ./../dance-cup-api
+      dockerfile: ./Dockerfile
+    depends_on:
+      - dance-cup-api-db
+    environment:
+      ASPNETCORE_URLS: http://+:80
+      StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      KafkaOptions__BootstrapServers: "kafka:9092"
+      KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
+      KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
+    entrypoint: [ "sh", "-c", "sleep 10 && dotnet ECC.DanceCup.Api.dll --migrate"]   
+  
   dance-cup-api:
     container_name: dance-cup-api
     build:
@@ -64,6 +80,7 @@ services:
     depends_on:
       - dance-cup-api-db
       - kafka-init
+      - dance-cup-api-migrate
     ports:
       - 81:80
     environment:
@@ -73,6 +90,24 @@ services:
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
 
+  dance-cup-auth-migrate:
+    container_name: dance-cup-auth-migrate
+    build:
+      context: ./../dance-cup-auth
+      dockerfile: ./Dockerfile
+    depends_on:
+      - dance-cup-auth-db
+    environment:
+      ASPNETCORE_URLS: http://+:80
+      StorageOptions__ConnectionString: "Host=dance-cup-auth-db; Port=5432; Database=dance-cup-auth; Username=postgres-user; Password=postgres;"
+      SecurityOptions__Secret: "cfa4a6f7-8d5d-4c61-aec9-0791d743dbb9_d2f60f8e-1d61-4c4a-92a5-4f9a90745691"
+      SecurityOptions__Audience: "dance-cup-audience"
+      SecurityOptions__Issuer: "dance-cup-issuer"
+      SecurityOptions__TokenExpiresMinutes: 60
+      KafkaOptions__BootstrapServers: "kafka:9092"
+      KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
+    entrypoint: [ "sh", "-c", "sleep 10 && dotnet ECC.DanceCup.Auth.dll --migrate"]
+  
   dance-cup-auth:
     container_name: dance-cup-auth
     build:
@@ -81,6 +116,7 @@ services:
     depends_on:
       - dance-cup-auth-db
       - kafka-init
+      - dance-cup-auth-migrate
     ports:
       - 82:80
     environment:
