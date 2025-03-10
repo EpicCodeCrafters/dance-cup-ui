@@ -20,6 +20,28 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
+      - name: Notify success
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.ECC_TG_CHAT_ID }}
+        run: |
+          MESSAGE="✅✅✅ Сборка и тестирование dance\\-cup\\-ui прошли успешно"
+          curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+            -d chat_id=$TELEGRAM_CHAT_ID \
+            -d text="$MESSAGE" \
+            -d parse_mode=MarkdownV2
+      - name: Notify failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          MESSAGE="❌❌❌ Сборка или тестирование dance\\-cup\\-ui провалены"
+          curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+            -d chat_id=$TELEGRAM_CHAT_ID \
+            -d text="$MESSAGE" \
+            -d parse_mode=MarkdownV2
   create-image:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -32,3 +54,25 @@ jobs:
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/dance-cup-ui:latest .
       - name: Push image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/dance-cup-ui:latest
+      - name: Notify success
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.ECC_TG_CHAT_ID }}
+        run: |
+          MESSAGE="✅✅✅ Образ dance\\-cup\\-ui обновлён"
+          curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+            -d chat_id=$TELEGRAM_CHAT_ID \
+            -d text="$MESSAGE" \
+            -d parse_mode=MarkdownV2
+      - name: Notify failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          MESSAGE="❌❌❌ Не удалось обновить образ dance\\-cup\\-ui"
+          curl -s -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+            -d chat_id=$TELEGRAM_CHAT_ID \
+            -d text="$MESSAGE" \
+            -d parse_mode=MarkdownV2
