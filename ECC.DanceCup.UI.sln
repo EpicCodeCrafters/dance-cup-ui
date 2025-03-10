@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{764090
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
 		README.md = README.md
+		.github\workflows\github-ci.yml = .github\workflows\github-ci.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI", "src\ECC.DanceCup.UI\ECC.DanceCup.UI.csproj", "{D0DB7907-A3E3-49D5-81B3-B7127B29C319}"
@@ -25,8 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.Utils", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cicd", "cicd", "{EF730F9D-AE2C-40AE-A457-02136C8D5468}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\github-ci.yml = .github\workflows\github-ci.yml
-		.github\workflows\github-cd.yml = .github\workflows\github-cd.yml
+		.github\workflows\github-cicd-dev.yml = .github\workflows\github-cicd-dev.yml
+		.github\workflows\github-cicd-prod.yml = .github\workflows\github-cicd-prod.yml
 	EndProjectSection
 EndProject
 Global
