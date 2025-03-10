@@ -11,7 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{764090
 		docker-compose.yml = docker-compose.yml
 		Dockerfile = Dockerfile
 		README.md = README.md
-		.github\workflows\github-ci.yml = .github\workflows\github-ci.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI", "src\ECC.DanceCup.UI\ECC.DanceCup.UI.csproj", "{D0DB7907-A3E3-49D5-81B3-B7127B29C319}"
