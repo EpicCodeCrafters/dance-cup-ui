@@ -25,8 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECC.DanceCup.UI.Utils", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cicd", "cicd", "{EF730F9D-AE2C-40AE-A457-02136C8D5468}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\github-ci.yml = .github\workflows\github-ci.yml
-		.github\workflows\github-cd.yml = .github\workflows\github-cd.yml
+		.github\workflows\github-cicd-dev.yml = .github\workflows\github-cicd-dev.yml
+		.github\workflows\github-cicd-prod.yml = .github\workflows\github-cicd-prod.yml
 	EndProjectSection
 EndProject
 Global
