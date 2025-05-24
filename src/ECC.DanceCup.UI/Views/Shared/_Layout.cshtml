@@ -1,49 +1,257 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ECC.DanceCup.UI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ECC.DanceCup.UI.styles.css" asp-append-version="true" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description"/>
+    <meta content="Coderthemes" name="author"/>
+
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
+    <!-- third party css -->
+    <link href="~/assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css"/>
+    <!-- App css -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="~/assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="~/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style"/>
+    <link href="~/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style"/>
+    <!-- Custom css -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/ECC.DanceCup.UI.styles.css" asp-append-version="true"/>
+
+    <style>
+        .auth-link {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+        .auth-link:hover {
+            color: #007bff;
+        }
+        /* Увеличение ширины логотипа и сохранение пропорций */
+        .logo-lg img, .logo-sm img {
+            padding-top: 20px;
+            width: 150px; /* Измените это значение для увеличения или уменьшения ширины логотипа */
+            height: auto; /* Сохраняет пропорции изображения */
+        }
+        /* Добавление отступа сверху для смещения меню вниз */
+        #leftside-menu-container {
+            padding-top: 100px; /* Измените это значение для регулировки расстояния от логотипа */
+        }
+        .topbar-menu {
+            display: flex;
+            align-items: center;
+        }
+        body.sidebar-condensed .logo-light,
+        body.sidebar-condensed .logo-dark,
+        body.sidebar-collapse .logo-light,
+        body.sidebar-collapse .logo-dark {
+            display: none !important;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ECC.DanceCup.UI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": false}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="leftside-menu">
+            <!-- LOGO -->
+            <a href="index.html" class="logo text-center logo-light">
+            <span class="logo-lg">
+                <img src="~/assets/images/logoo.png" alt="" height="70">
+            </span>
+                <span class="logo-sm">
+                <img src="~/assets/images/logoo.png" alt="" height="70">
+            </span>
+            </a>
+            <!-- LOGO Dark -->
+            <a href="index.html" class="logo text-center logo-dark">
+            <span class="logo-lg">
+                <img src="~/assets/images/logoo.png" alt="" height="70">
+            </span>
+                <span class="logo-sm">
+                <img src="~/assets/images/logoo.png" alt="" height="70">
+            </span>
+            </a>
+            <div class="h-100" id="leftside-menu-container" data-simplebar>
+                <!--- Sidemenu -->
+                <ul class="side-nav">
+                    <li class="side-nav-title side-nav-item" style="font-size: 14px">Просмотр</li>
+                    <li class="side-nav-item">
+                        <a href="apps-calendar.html" class="side-nav-link">
+                            <i class="dripicons-checklist"></i>
+                            <span> Список всех турниров </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="apps-calendar.html" class="side-nav-link">
+                            <i class="mdi-card-account-details"></i>
+                            <span> Регистрация пары</span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="apps-calendar.html" class="side-nav-link">
+                            <i class="uil-clipboard-alt"></i>
+                            <span> Резуьтаты регистрации </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-title side-nav-item" style="font-size: 14px">Оперирывание турнирами</li>
+                    <li class="side-nav-item">
+                        <a href="apps-calendar.html" class="side-nav-link">
+                            <i class="dripicons-plus "></i>
+                            <span> Создание турнира </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="apps-calendar.html" class="side-nav-link">
+                            <i class="dripicons-view-list"></i>
+                            <span> Свои турниры </span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- End Sidebar -->
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar Start -->
+                <div class="navbar-custom">
+                    <ul class="list-unstyled topbar-menu float-end mb-0">
+                        <li>
+                            <a href="/User/Login" class="nav-link auth-link">Войти</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li>
+                            <a href="/User/Register" class="nav-link auth-link ms-3">Зарегистрироваться</a>
+                        </li>
+                        <li>
+                            <a class="nav-link auth-link" style="font-size: 8px">*как администратор счётной комиссии</a>
+                        </li>
+                        <li class="notification-list">
+                            <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                <i class="dripicons-gear noti-icon"></i>
+                            </a>
                         </li>
                     </ul>
+                    <button class="button-menu-mobile open-left">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+                </div>
+                <!-- end Topbar -->
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+                <!-- container -->
+
+            </div>
+            <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script>
+                            © EpicCodeCrafters
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Настройки стиля</h5>
+            </div>
+            <div class="rightbar-content h-100" data-simplebar>
+                <div class="p-3">
+                    <!-- Settings -->
+                    <h5 class="mt-3">Цветовая палитра</h5>
+                    <hr class="mt-1"/>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light"
+                               id="light-mode-check" checked>
+                        <label class="form-check-label" for="light-mode-check">Светлый режим</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark"
+                               id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Темный режим</label>
+                    </div>
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Стиль левого меню</h5>
+                    <hr class="mt-1"/>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Синий</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check"
+                               checked>
+                        <label class="form-check-label" for="light-check">Светлый</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Темный</label>
+                    </div>
+                    <h5 class="mt-4">Боковое меню</h5>
+                    <div class="form-check form-switch mb-1">
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                            <label class="form-check-label" for="condensed-check">Сжатое</label>
+                        </div>
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked>
+                            <label class="form-check-label" for="fixed-check">Стандартное</label>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - ECC.DanceCup.UI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+        <script>
+            function updateSidebarClass() {
+                const body = document.body;
+                const condensedCheck = document.getElementById('condensed-check');
+                if (condensedCheck.checked) {
+                    body.classList.add('sidebar-condensed');
+                } else {
+                    body.classList.remove('sidebar-condensed');
+                }
+            }
+            // Инициализация при загрузке страницы
+            document.addEventListener('DOMContentLoaded', updateSidebarClass);
+            // Обработчики для чекбоксов
+            document.getElementById('condensed-check').addEventListener('change', updateSidebarClass);
+            document.getElementById('fixed-check').addEventListener('change', updateSidebarClass);
+            // Обработчик для кнопки сворачивания
+            document.querySelector('.button-menu-mobile').addEventListener('click', function() {
+                const body = document.body;
+                body.classList.toggle('sidebar-condensed');
+            });
+        </script>
+        <!-- bundle -->
+        <script src="~/assets/js/vendor.min.js">
+        </script>
+        <script src="~/assets/js/app.min.js"></script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+    </div>
 </body>
 </html>
