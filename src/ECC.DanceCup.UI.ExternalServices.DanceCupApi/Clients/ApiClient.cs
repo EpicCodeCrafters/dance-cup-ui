@@ -26,4 +26,18 @@ public class ApiClient : IApiClient
             return Result.Fail("Не удалось получить список танцев");
         }
     }
+
+    public async Task<Result<GetTournamentsResponse>> GetTournamentsAsync(GetTournamentsRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.GetTournamentsAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException)
+        {
+            return Result.Fail("Не удалось получить список турниров");
+        }
+    }
 }

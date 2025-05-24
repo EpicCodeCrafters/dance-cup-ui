@@ -5,16 +5,21 @@ package ECC.DanceCup.Api.Presentation.Grpc;
 option csharp_namespace = "ECC.DanceCup.Api.Presentation.Grpc";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 service DanceCupApi {
     rpc GetDances (GetDancesRequest) returns (GetDancesResponse);
+    rpc GetReferees (GetRefereesRequest) returns (GetRefereesResponse);
+    rpc GetTournamentRegistrationResult (GetTournamentRegistrationResultRequest) returns (GetTournamentRegistrationResultResponse);
 
     rpc CreateReferee (CreateRefereeRequest) returns (CreateRefereeResponse);
 
     rpc CreateTournament (CreateTournamentRequest) returns (CreateTournamentResponse);
+    rpc GetTournaments (GetTournamentsRequest) returns (GetTournamentsResponse);
     rpc StartTournamentRegistration (StartTournamentRegistrationRequest) returns (StartTournamentRegistrationResponse);
     rpc FinishTournamentRegistration (FinishTournamentRegistrationRequest) returns (FinishTournamentRegistrationResponse);
     rpc ReopenTournamentRegistration (ReopenTournamentRegistrationRequest) returns (ReopenTournamentRegistrationResponse);
+    rpc RegisterCoupleForTournament (RegisterCoupleForTournamentRequest) returns (RegisterCoupleForTournamentResponse);
 }
 
 message GetDancesRequest { }
@@ -29,6 +34,21 @@ message Dance {
     string name = 3;
 }
 
+message GetRefereesRequest {
+    google.protobuf.StringValue full_name = 1;
+    int32 page_number = 2;
+    int32 page_size = 3;
+}
+
+message GetRefereesResponse {
+    repeated Referee referees = 1;
+}
+
+message Referee {
+    int64 id = 1;
+    string full_name = 2;
+}
+
 message CreateRefereeRequest {
     string full_name = 1;
 }
@@ -40,8 +60,9 @@ message CreateRefereeResponse {
 message CreateTournamentRequest {
     int64 user_id = 1;
     string name = 2;
-    google.protobuf.Timestamp date = 3;
-    repeated CreateCategoryModel create_category_models = 4;
+    string description = 3;
+    google.protobuf.Timestamp date = 4;
+    repeated CreateCategoryModel create_category_models = 5;
 }
 
 message CreateTournamentResponse {
@@ -52,6 +73,25 @@ message CreateCategoryModel {
     string name = 1;
     repeated int64 dances_ids = 2;
     repeated int64 referees_ids = 3;
+}
+
+message GetTournamentsRequest {
+    int64 user_id = 1;
+    int32 page_number = 2;
+    int32 page_size = 3;
+}
+
+message GetTournamentsResponse {
+    repeated GetTournamentsItem Tournaments = 1;
+
+    message GetTournamentsItem {
+        int64 id = 1;
+        int64 user_id = 2;
+        string name = 3;
+        string description = 4;
+        google.protobuf.Timestamp date = 5;
+        string state = 6;
+    }
 }
 
 message StartTournamentRegistrationRequest {
@@ -66,8 +106,38 @@ message FinishTournamentRegistrationRequest {
 
 message FinishTournamentRegistrationResponse { }
 
+message GetTournamentRegistrationResultRequest {
+    int64 tournament_id = 1;
+}
+
+message GetTournamentRegistrationResultResponse {
+    repeated TournamentRegistrationResultItem items = 1;
+
+    message TournamentRegistrationResultItem {
+        string category_name = 1;
+        string first_participant_full_name = 2;
+        google.protobuf.StringValue second_participant_full_name = 3;
+        google.protobuf.StringValue dance_organization_name = 4;
+        google.protobuf.StringValue first_trainer_full_name = 5;
+        google.protobuf.StringValue second_trainer_full_name = 6;
+    }
+
+}
+
 message ReopenTournamentRegistrationRequest {
     int64 tournament_id = 1;
 }
 
 message ReopenTournamentRegistrationResponse { }
+
+message RegisterCoupleForTournamentRequest {
+    int64 tournament_id = 1;
+    string first_participant_full_name = 2;
+    google.protobuf.StringValue second_participant_full_name = 3;
+    google.protobuf.StringValue dance_organization_name = 4;
+    google.protobuf.StringValue first_trainer_full_name = 5;
+    google.protobuf.StringValue second_trainer_full_name = 6;
+    repeated int64 categories_ids = 7;
+}
+
+message RegisterCoupleForTournamentResponse { }

@@ -41,7 +41,7 @@ public class UserController : Controller
         );
         if (getUserTokenResult.IsFailed)
         {
-            return Redirect("/Home/Error");
+            return Redirect("/Home/Error");//добавить нормальную обработку ошибки
         }
         
         HttpContext.Session.SetString("token", getUserTokenResult.Value.Token);
