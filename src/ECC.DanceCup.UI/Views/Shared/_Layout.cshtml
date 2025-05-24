@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8"/>
@@ -43,8 +43,6 @@
             display: flex;
             align-items: center;
         }
-        body.sidebar-condensed .logo-light,
-        body.sidebar-condensed .logo-dark,
         body.sidebar-collapse .logo-light,
         body.sidebar-collapse .logo-dark {
             display: none !important;
@@ -52,206 +50,175 @@
     </style>
 </head>
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": false}'>
-    <!-- Begin page -->
-    <div class="wrapper">
-        <!-- ========== Left Sidebar Start ========== -->
-        <div class="leftside-menu">
-            <!-- LOGO -->
-            <a href="index.html" class="logo text-center logo-light">
+<!-- Begin page -->
+<div class="wrapper">
+    <!-- ========== Left Sidebar Start ========== -->
+    <div class="leftside-menu">
+        <!-- LOGO -->
+        <a href="index.html" class="logo text-center logo-light">
             <span class="logo-lg">
                 <img src="~/assets/images/logoo.png" alt="" height="70">
             </span>
-                <span class="logo-sm">
+            <span class="logo-sm">
                 <img src="~/assets/images/logoo.png" alt="" height="70">
             </span>
-            </a>
-            <!-- LOGO Dark -->
-            <a href="index.html" class="logo text-center logo-dark">
+        </a>
+        <!-- LOGO Dark -->
+        <a href="index.html" class="logo text-center logo-dark">
             <span class="logo-lg">
                 <img src="~/assets/images/logoo.png" alt="" height="70">
             </span>
-                <span class="logo-sm">
+            <span class="logo-sm">
                 <img src="~/assets/images/logoo.png" alt="" height="70">
             </span>
-            </a>
-            <div class="h-100" id="leftside-menu-container" data-simplebar>
-                <!--- Sidemenu -->
-                <ul class="side-nav">
-                    <li class="side-nav-title side-nav-item" style="font-size: 14px">Просмотр</li>
-                    <li class="side-nav-item">
-                        <a href="apps-calendar.html" class="side-nav-link">
-                            <i class="dripicons-checklist"></i>
-                            <span> Список всех турниров </span>
-                        </a>
+        </a>
+        <div class="h-100" id="leftside-menu-container" data-simplebar>
+            <!--- Sidemenu -->
+            <ul class="side-nav">
+                <li class="side-nav-title side-nav-item" style="font-size: 14px">Для участников</li>
+                <li class="side-nav-item">
+                    <a href="apps-calendar.html" class="side-nav-link">
+                        <i class="mdi-card-account-details"></i>
+                        <span> Регистрация пары</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="apps-calendar.html" class="side-nav-link">
+                        <i class="uil-clipboard-alt"></i>
+                        <span> Резуьтаты регистрации </span>
+                    </a>
+                </li>
+                <li class="side-nav-title side-nav-item" style="font-size: 14px">Оперирывание турнирами</li>
+                <li class="side-nav-item">
+                    <a href="apps-calendar.html" class="side-nav-link">
+                        <i class="dripicons-plus "></i>
+                        <span> Создание турнира </span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="apps-calendar.html" class="side-nav-link">
+                        <i class="dripicons-view-list"></i>
+                        <span> Свои турниры </span>
+                    </a>
+                </li>
+            </ul>
+            <!-- End Sidebar -->
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="content-page">
+        <div class="content">
+            <!-- Topbar Start -->
+            <div class="navbar-custom">
+                <ul class="list-unstyled topbar-menu float-end mb-0">
+                    <li>
+                        <a href="/User/Login" class="nav-link auth-link">Войти</a>
                     </li>
-                    <li class="side-nav-item">
-                        <a href="apps-calendar.html" class="side-nav-link">
-                            <i class="mdi-card-account-details"></i>
-                            <span> Регистрация пары</span>
-                        </a>
+                    <li>
+                        <a href="/User/Register" class="nav-link auth-link ms-3">Зарегистрироваться</a>
                     </li>
-                    <li class="side-nav-item">
-                        <a href="apps-calendar.html" class="side-nav-link">
-                            <i class="uil-clipboard-alt"></i>
-                            <span> Резуьтаты регистрации </span>
-                        </a>
+                    <li>
+                        <a class="nav-link auth-link" style="font-size: 8px">*как администратор счётной комиссии</a>
                     </li>
-                    <li class="side-nav-title side-nav-item" style="font-size: 14px">Оперирывание турнирами</li>
-                    <li class="side-nav-item">
-                        <a href="apps-calendar.html" class="side-nav-link">
-                            <i class="dripicons-plus "></i>
-                            <span> Создание турнира </span>
-                        </a>
-                    </li>
-                    <li class="side-nav-item">
-                        <a href="apps-calendar.html" class="side-nav-link">
-                            <i class="dripicons-view-list"></i>
-                            <span> Свои турниры </span>
+                    <li class="notification-list">
+                        <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                            <i class="dripicons-gear noti-icon"></i>
                         </a>
                     </li>
                 </ul>
-                <!-- End Sidebar -->
-                <div class="clearfix"></div>
+                <button class="button-menu-mobile open-left">
+                    <i class="mdi mdi-menu"></i>
+                </button>
             </div>
-        </div>
-        <!-- Left Sidebar End -->
+            <!-- end Topbar -->
 
-        <!-- ============================================================== -->
-        <!-- Start Page Content here -->
-        <!-- ============================================================== -->
-
-        <div class="content-page">
-            <div class="content">
-                <!-- Topbar Start -->
-                <div class="navbar-custom">
-                    <ul class="list-unstyled topbar-menu float-end mb-0">
-                        <li>
-                            <a href="/User/Login" class="nav-link auth-link">Войти</a>
-                        </li>
-                        <li>
-                            <a href="/User/Register" class="nav-link auth-link ms-3">Зарегистрироваться</a>
-                        </li>
-                        <li>
-                            <a class="nav-link auth-link" style="font-size: 8px">*как администратор счётной комиссии</a>
-                        </li>
-                        <li class="notification-list">
-                            <a class="nav-link end-bar-toggle" href="javascript: void(0);">
-                                <i class="dripicons-gear noti-icon"></i>
-                            </a>
-                        </li>
-                    </ul>
-                    <button class="button-menu-mobile open-left">
-                        <i class="mdi mdi-menu"></i>
-                    </button>
-                </div>
-                <!-- end Topbar -->
-
-                <!-- Start Content-->
-                <div class="container-fluid">
-                    @RenderBody()
-                </div>
-                <!-- container -->
-
+            <!-- Start Content-->
+            <div class="container-fluid">
+                @RenderBody()
             </div>
-            <!-- content -->
-
-            <!-- Footer Start -->
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <script>document.write(new Date().getFullYear())</script>
-                            © EpicCodeCrafters
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!-- end Footer -->
+            <!-- container -->
 
         </div>
+        <!-- content -->
 
-        <!-- Right Sidebar -->
-        <div class="end-bar">
-            <div class="rightbar-title">
-                <a href="javascript:void(0);" class="end-bar-toggle float-end">
-                    <i class="dripicons-cross noti-icon"></i>
-                </a>
-                <h5 class="m-0">Настройки стиля</h5>
-            </div>
-            <div class="rightbar-content h-100" data-simplebar>
-                <div class="p-3">
-                    <!-- Settings -->
-                    <h5 class="mt-3">Цветовая палитра</h5>
-                    <hr class="mt-1"/>
-                    <div class="form-check form-switch mb-1">
-                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light"
-                               id="light-mode-check" checked>
-                        <label class="form-check-label" for="light-mode-check">Светлый режим</label>
-                    </div>
-                    <div class="form-check form-switch mb-1">
-                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark"
-                               id="dark-mode-check">
-                        <label class="form-check-label" for="dark-mode-check">Темный режим</label>
-                    </div>
-                    <!-- Left Sidebar-->
-                    <h5 class="mt-4">Стиль левого меню</h5>
-                    <hr class="mt-1"/>
-                    <div class="form-check form-switch mb-1">
-                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
-                        <label class="form-check-label" for="default-check">Синий</label>
-                    </div>
-                    <div class="form-check form-switch mb-1">
-                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check"
-                               checked>
-                        <label class="form-check-label" for="light-check">Светлый</label>
-                    </div>
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
-                        <label class="form-check-label" for="dark-check">Темный</label>
-                    </div>
-                    <h5 class="mt-4">Боковое меню</h5>
-                    <div class="form-check form-switch mb-1">
-                        <div class="form-check form-switch mb-1">
-                            <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
-                            <label class="form-check-label" for="condensed-check">Сжатое</label>
-                        </div>
-                        <div class="form-check form-switch mb-1">
-                            <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked>
-                            <label class="form-check-label" for="fixed-check">Стандартное</label>
-                        </div>
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <script>document.write(new Date().getFullYear())</script>
+                        © EpicCodeCrafters
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="rightbar-overlay"></div>
-        <!-- /End-bar -->
-        <script>
-            function updateSidebarClass() {
-                const body = document.body;
-                const condensedCheck = document.getElementById('condensed-check');
-                if (condensedCheck.checked) {
-                    body.classList.add('sidebar-condensed');
-                } else {
-                    body.classList.remove('sidebar-condensed');
-                }
-            }
-            // Инициализация при загрузке страницы
-            document.addEventListener('DOMContentLoaded', updateSidebarClass);
-            // Обработчики для чекбоксов
-            document.getElementById('condensed-check').addEventListener('change', updateSidebarClass);
-            document.getElementById('fixed-check').addEventListener('change', updateSidebarClass);
-            // Обработчик для кнопки сворачивания
-            document.querySelector('.button-menu-mobile').addEventListener('click', function() {
-                const body = document.body;
-                body.classList.toggle('sidebar-condensed');
-            });
-        </script>
-        <!-- bundle -->
-        <script src="~/assets/js/vendor.min.js">
-        </script>
-        <script src="~/assets/js/app.min.js"></script>
+        </footer>
+        <!-- end Footer -->
 
-        @await RenderSectionAsync("Scripts", required: false)
     </div>
+
+    <!-- Right Sidebar -->
+    <div class="end-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Настройки стиля</h5>
+        </div>
+        <div class="rightbar-content h-100" data-simplebar>
+            <div class="p-3">
+                <!-- Settings -->
+                <h5 class="mt-3">Цветовая палитра</h5>
+                <hr class="mt-1"/>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light"
+                           id="light-mode-check" checked>
+                    <label class="form-check-label" for="light-mode-check">Светлый режим</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark"
+                           id="dark-mode-check">
+                    <label class="form-check-label" for="dark-mode-check">Темный режим</label>
+                </div>
+                <!-- Left Sidebar-->
+                <h5 class="mt-4">Стиль левого меню</h5>
+                <hr class="mt-1"/>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                    <label class="form-check-label" for="default-check">Синий</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check"
+                           checked>
+                    <label class="form-check-label" for="light-check">Светлый</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                    <label class="form-check-label" for="dark-check">Темный</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightbar-overlay"></div>
+    <!-- /End-bar -->
+    <script>
+        // Обработчик для кнопки сворачивания
+        document.querySelector('.button-menu-mobile').addEventListener('click', function() {
+            const body = document.body;
+            body.classList.toggle('sidebar-collapse');
+        });
+    </script>
+    <!-- bundle -->
+    <script src="~/assets/js/vendor.min.js">
+    </script>
+    <script src="~/assets/js/app.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</div>
 </body>
 </html>
