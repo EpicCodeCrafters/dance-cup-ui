@@ -1,0 +1,61 @@
+﻿@{
+    Layout = null; // Отключаем layout
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Вход</title>
+
+    <!-- Стили из layout, необходимые для работы формы и кнопки -->
+    <link href="~/assets/css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css"/>
+    <link href="~/assets/css/icons.min.css" rel="stylesheet" type="text/css"/> <!-- Иконки -->
+    <link href="~/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style"/> <!-- Основные стили -->
+    <link href="~/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style"/> <!-- Темная тема -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/> <!-- Кастомные стили -->
+    <link rel="stylesheet" href="~/ECC.DanceCup.UI.styles.css" asp-append-version="true"/> <!-- Дополнительные стили -->
+
+    <!-- Стили для центрирования формы -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        .form-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    @using (Html.BeginForm("Login", "User", FormMethod.Post))
+    {
+        <div class="mb-3">
+            <label for="phone-number" class="form-label">Номер телефона</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="Номер телефона" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <div class="input-group input-group-merge">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Введите ваш пароль" required>
+                <div class="input-group-text" data-password="false">
+                    <span class="password-eye"></span>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Войти</button>
+    }
+</div>
+
+<!-- Скрипты из layout, необходимые для работы кнопки -->
+<script src="~/assets/js/vendor.min.js"></script> <!-- Библиотеки (Bootstrap, jQuery и т.д.) -->
+<script src="~/assets/js/app.min.js"></script> <!-- Кастомный JavaScript -->
+</body>
+</html>
