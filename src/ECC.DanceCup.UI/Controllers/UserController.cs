@@ -1,6 +1,9 @@
 ﻿using ECC.DanceCup.Auth.Presentation.Grpc;
+using ECC.DanceCup.UI.Auth;
 using ECC.DanceCup.UI.ExternalServices.DanceCupAuth.Clients;
 using ECC.DanceCup.UI.Utils.Extensions;
+using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECC.DanceCup.UI.Controllers;
@@ -9,15 +12,15 @@ public class UserController : Controller
 {
     private readonly IAuthClient _authClient;
     private readonly ILogger<UserController> _logger;
-
     public UserController(
         IAuthClient authClient,
-        ILogger<UserController> logger)
+        ILogger<UserController> logger,
+        ICurrentUser currentUser)
     {
         _authClient = authClient;
         _logger = logger;
     }
-
+    
     public IActionResult Login()
     {
         return View();
@@ -40,8 +43,8 @@ public class UserController : Controller
             HttpContext.RequestAborted
         );
         if (getUserTokenResult.IsFailed)
-        {
-            return Redirect("/Home/Error");//добавить нормальную обработку ошибки
+        { 
+            return RedirectToAction("Error", "Home","shish tebe a ne token dlya vhoda");//добавить нормальную обработку ошибки
         }
         
         HttpContext.Session.SetString("token", getUserTokenResult.Value.Token);
@@ -49,6 +52,7 @@ public class UserController : Controller
         return Redirect("/Home");
     }
 
+    
     [HttpPost]
     public async Task<IActionResult> Register(string phoneNumber, string password)
     {
@@ -63,6 +67,7 @@ public class UserController : Controller
         if (createUserResult.IsFailed)
         {
             _logger.LogDebug(createUserResult.StringifyErrors());
+            return RedirectToAction("Error", "Home","shish tebe a ne registachia");//добавить нормальную обработку ошибки
         }
         var getUserTokenResult = await _authClient.GetUserTokenAsync(
             new GetUserTokenRequest
@@ -74,10 +79,18 @@ public class UserController : Controller
         );
         if (getUserTokenResult.IsFailed)
         {
-            return Redirect("/Home/Error");
+            return RedirectToAction("Error", "Home","shish tebe a ne token dlya registachii");//добавить нормальную обработку ошибки
         }
         
         HttpContext.Session.SetString("token", getUserTokenResult.Value.Token);
+        
+        return Redirect("/Home");
+    }
+    
+    [Authorize]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Remove("token");
         
         return Redirect("/Home");
     }

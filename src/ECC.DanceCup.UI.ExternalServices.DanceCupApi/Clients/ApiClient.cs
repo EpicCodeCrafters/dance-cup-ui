@@ -40,4 +40,46 @@ public class ApiClient : IApiClient
             return Result.Fail("Не удалось получить список турниров");
         }
     }
+
+    public async Task<Result<CreateTournamentResponse>> CreateTournamentAsync(CreateTournamentRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.CreateTournamentAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+
+    public async Task<Result<GetRefereesResponse>> GetRefereesAsync(GetRefereesRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.GetRefereesAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+
+    public async Task<Result<CreateRefereeResponse>> CreateRefereeAsync(CreateRefereeRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.CreateRefereeAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
 }

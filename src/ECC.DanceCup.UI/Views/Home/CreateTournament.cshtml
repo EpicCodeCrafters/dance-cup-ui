@@ -1,0 +1,94 @@
+﻿@model (ECC.DanceCup.Api.Presentation.Grpc.GetDancesResponse Dances, ECC.DanceCup.Api.Presentation.Grpc.GetRefereesResponse Referees)
+
+<div class="container-fluid">
+    <h1>Создать турнир</h1>
+    <form asp-action="CreateTournament" method="post">
+        <div class="form-group">
+            <label for="name">Название турнира</label>
+            <input type="text" id="name" name="name" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="description">Описание</label>
+            <textarea id="description" name="description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="date">Дата</label>
+            <input type="date" id="date" name="date" class="form-control" required />
+        </div>
+
+        <h2>Категории</h2>
+        <div id="categories-container">
+            <!-- Первая категория по умолчанию -->
+            <div class="category-section">
+                <h3>Категория 1</h3>
+                <div class="form-group">
+                    <label>Название категории</label>
+                    <input type="text" name="categories[0].Name" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Рефери</label>
+                    <select multiple name="categories[0].RefereesIds" class="form-control">
+                        @foreach (var referee in Model.Referees.Referees)
+                        {
+                            <option value="@referee.Id">@referee.FullName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Танцы</label>
+                    <select multiple name="categories[0].DancesIds" class="form-control">
+                        @foreach (var dance in Model.Dances.Dances)
+                        {
+                            <option value="@dance.Id">@dance.Name</option>
+                        }
+                    </select>
+                </div>
+                <br/>
+                <a class="nav-link auth-link" style="font-size: 8px">*для выбора нескольких вариантов зажмите ctrl</a>
+                <br/>
+                <button type="button" class="btn btn-danger btn-sm remove-category">Удалить категорию</button>
+            </div>
+        </div>
+        <button type="button" id="add-category" class="btn btn-secondary mt-2">Добавить категорию</button>
+        <br /><br />
+        <button type="submit" class="btn btn-danger">Сохранить</button>
+    </form>
+</div>
+
+<script>
+    // Добавление новой категории
+    document.getElementById('add-category').addEventListener('click', function () {
+        var container = document.getElementById('categories-container');
+        var sections = container.getElementsByClassName('category-section');
+        var index = sections.length;
+        var newSection = sections[0].cloneNode(true);
+
+        // Обновляем заголовок категории
+        newSection.querySelector('h3').textContent = 'Категория ' + (index + 1);
+
+        // Обновляем имена полей с новым индексом
+        var nameInput = newSection.querySelector('input[name="categories[0].Name"]');
+        nameInput.name = 'categories[' + index + '].Name';
+        nameInput.value = ''; // Очищаем поле
+
+        var refereeSelect = newSection.querySelector('select[name="categories[0].RefereesIds"]');
+        refereeSelect.name = 'categories[' + index + '].RefereesIds';
+        refereeSelect.selectedIndex = -1; // Сбрасываем выбор
+
+        var danceSelect = newSection.querySelector('select[name="categories[0].DancesIds"]');
+        danceSelect.name = 'categories[' + index + '].DancesIds';
+        danceSelect.selectedIndex = -1; // Сбрасываем выбор
+
+        // Добавляем обработчик для кнопки удаления
+        newSection.querySelector('.remove-category').addEventListener('click', function () {
+            newSection.remove();
+        });
+
+        container.appendChild(newSection);
+    });
+
+    // Удаление категории для начальной категории
+    document.querySelector('.remove-category').addEventListener('click', function () {
+        this.closest('.category-section').remove();
+    });
+</script>

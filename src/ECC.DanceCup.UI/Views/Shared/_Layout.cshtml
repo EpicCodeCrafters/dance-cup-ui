@@ -1,3 +1,5 @@
+@using ECC.DanceCup.UI.Auth
+@inject ICurrentUser CurrentUser
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -75,32 +77,28 @@
         <div class="h-100" id="leftside-menu-container" data-simplebar>
             <!--- Sidemenu -->
             <ul class="side-nav">
-                <li class="side-nav-title side-nav-item" style="font-size: 14px">Для участников</li>
-                <li class="side-nav-item">
-                    <a href="apps-calendar.html" class="side-nav-link">
-                        <i class="mdi-card-account-details"></i>
-                        <span> Регистрация пары</span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="apps-calendar.html" class="side-nav-link">
-                        <i class="uil-clipboard-alt"></i>
-                        <span> Резуьтаты регистрации </span>
-                    </a>
-                </li>
-                <li class="side-nav-title side-nav-item" style="font-size: 14px">Оперирывание турнирами</li>
-                <li class="side-nav-item">
-                    <a href="apps-calendar.html" class="side-nav-link">
-                        <i class="dripicons-plus "></i>
-                        <span> Создание турнира </span>
-                    </a>
-                </li>
-                <li class="side-nav-item">
-                    <a href="apps-calendar.html" class="side-nav-link">
-                        <i class="dripicons-view-list"></i>
-                        <span> Свои турниры </span>
-                    </a>
-                </li>
+                @if (CurrentUser.Authenticated == true)
+                {
+                    <li class="side-nav-title side-nav-item" style="font-size: 14px">Оперирывание турнирами</li>
+                    <li class="side-nav-item">
+                        <a href="/Home/CreateTournament" class="side-nav-link">
+                            <i class="dripicons-plus "></i>
+                            <span> Создание турнира </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="/Home/Tournaments" class="side-nav-link">
+                            <i class="dripicons-view-list"></i>
+                            <span> Свои турниры </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="/Home/CreateReferee" class="side-nav-link">
+                            <i class="dripicons-user"></i>
+                            <span> Добавление судьи </span>
+                        </a>
+                    </li>
+                }
             </ul>
             <!-- End Sidebar -->
             <div class="clearfix"></div>
@@ -117,20 +115,31 @@
             <!-- Topbar Start -->
             <div class="navbar-custom">
                 <ul class="list-unstyled topbar-menu float-end mb-0">
-                    <li>
-                        <a href="/User/Login" class="nav-link auth-link">Войти</a>
-                    </li>
-                    <li>
-                        <a href="/User/Register" class="nav-link auth-link ms-3">Зарегистрироваться</a>
-                    </li>
-                    <li>
-                        <a class="nav-link auth-link" style="font-size: 8px">*как администратор счётной комиссии</a>
-                    </li>
+                    @if (CurrentUser.Authenticated != true)
+                    {
+                        <li>
+                            <a href="/User/Login" class="nav-link auth-link">Войти</a>
+                        </li>
+                        <li>
+                            <a href="/User/Register" class="nav-link auth-link ms-3">Зарегистрироваться</a>
+                        </li>
+                        <li>
+                            <a class="nav-link auth-link" style="font-size: 8px">*как администратор счётной комиссии</a>
+                        </li>
+                    }
                     <li class="notification-list">
                         <a class="nav-link end-bar-toggle" href="javascript: void(0);">
                             <i class="dripicons-gear noti-icon"></i>
                         </a>
                     </li>
+                    @if (CurrentUser.Authenticated == true)
+                    {
+                        <li class="notification-list">
+                            <a href="/User/Logout" class="nav-link end-bar-toggle">
+                                <i class="dripicons-exit noti-icon"></i>
+                            </a>
+                        </li>
+                    }
                 </ul>
                 <button class="button-menu-mobile open-left">
                     <i class="mdi mdi-menu"></i>
