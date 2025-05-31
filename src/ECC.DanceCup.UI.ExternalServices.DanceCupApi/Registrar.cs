@@ -1,4 +1,5 @@
 ﻿using ECC.DanceCup.UI.ExternalServices.DanceCupApi.Clients;
+using ECC.DanceCup.UI.ExternalServices.DanceCupApi.Tools;
 using Grpc.Core;
 using Grpc.Health.V1;
 using Grpc.Net.Client;
@@ -14,36 +15,52 @@ public static class Registrar
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddScoped<IApiClient, ApiClient>();
-
-        var danceCupApiAddress = configuration["DanceCupApiOptions:Address"];
-        if (danceCupApiAddress is null)
+        services.AddScoped<IApiClient, ApiClient>(serviceProvider =>
         {
-            throw new ArgumentNullException(nameof(danceCupApiAddress));
-        }
-        services.AddGrpcClient<Api.Presentation.Grpc.DanceCupApi.DanceCupApiClient>(cfg =>
-        {
-            cfg.Address = new Uri(danceCupApiAddress, UriKind.Absolute);
+            var balancer = serviceProvider.GetRequiredService<IDanceCupApiClientSideBalancer>();
+            return new ApiClient(balancer.GetRandomClient());
         });
+
+        services.AddScoped<IDanceCupApiClientSideBalancer, DanceCupApiClientSideBalancer>();
 
         return services;
     }
 
     public static async Task CheckDanceCupApiHealthAsync(this IServiceProvider serviceProvider, IConfiguration configuration)
     {
+        var danceCupApiAddresses = configuration
+            .GetSection("DanceCupApiOptions:Addresses")
+            .Get<string[]>();
+        if (danceCupApiAddresses is null or [])
+        {
+            throw new ArgumentNullException(nameof(danceCupApiAddresses));
+        }
+
+        await Task.WhenAll(
+            danceCupApiAddresses.Select((address, i) => CheckDanceCupApiHealthAsync(
+                serviceProvider, 
+                address, 
+                postfix: i > 0 ? i.ToString() : string.Empty
+                )
+            )
+        );
+    }
+
+    private static async Task CheckDanceCupApiHealthAsync(
+        this IServiceProvider serviceProvider, 
+        string danceCupApiAddress,
+        string postfix)
+    {
         await using var scope = serviceProvider.CreateAsyncScope();
 
         var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         var logger = loggerFactory.CreateLogger(typeof(Registrar).FullName ?? nameof(Registrar));
+        var serviceName = string.IsNullOrWhiteSpace(postfix)
+            ? "dance-cup-api"
+            : $"dance-cup-api-{postfix}";
 
         try
         {
-            var danceCupApiAddress = configuration["DanceCupApiOptions:Address"];
-            if (danceCupApiAddress is null)
-            {
-                throw new ArgumentNullException(nameof(danceCupApiAddress));
-            }
-
             var channel = GrpcChannel.ForAddress(danceCupApiAddress);
             var healthClient = new Health.HealthClient(channel);
 
@@ -51,7 +68,7 @@ public static class Registrar
 
             if (response.Status is HealthCheckResponse.Types.ServingStatus.Serving)
             {
-                logger.LogInformation("DanceCupApi доступен");
+                logger.LogInformation("Сервис {service} доступен", serviceName);
                 return;
             }
         }
@@ -60,6 +77,6 @@ public static class Registrar
             // ignored
         }
 
-        logger.LogError("DanceCupApi не доступен");
+        logger.LogError("Сервис {service} не доступен", serviceName);
     }
 }

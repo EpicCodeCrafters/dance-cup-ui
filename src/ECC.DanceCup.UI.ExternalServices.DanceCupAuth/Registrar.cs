@@ -50,7 +50,7 @@ public static class Registrar
 
             if (response.Status is HealthCheckResponse.Types.ServingStatus.Serving)
             {
-                logger.LogInformation("DanceCupAuth доступен");
+                logger.LogInformation("Сервис dance-cup-auth доступен");
                 return;
             }
         }
@@ -59,6 +59,6 @@ public static class Registrar
             // ignored
         }
 
-        logger.LogError("DanceCupAuth не доступен");
+        logger.LogError("Сервис dance-cup-auth не доступен");
     }
 }
