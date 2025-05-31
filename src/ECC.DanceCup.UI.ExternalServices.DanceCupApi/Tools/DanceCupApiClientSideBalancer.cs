@@ -22,18 +22,20 @@ internal class DanceCupApiClientSideBalancer : IDanceCupApiClientSideBalancer, I
 
     public Api.Presentation.Grpc.DanceCupApi.DanceCupApiClient GetRandomClient()
     {
-        var danceCupApiAddresses = _configuration
-            .GetSection("DanceCupApiOptions:Addresses")
-            .Get<string[]>();
-        if (danceCupApiAddresses is null or [])
+        if (_channel is null)
         {
-            throw new ArgumentNullException(nameof(danceCupApiAddresses));
-        }
+            var danceCupApiAddresses = _configuration
+                .GetSection("DanceCupApiOptions:Addresses")
+                .Get<string[]>();
+            if (danceCupApiAddresses is null or [])
+            {
+                throw new ArgumentNullException(nameof(danceCupApiAddresses));
+            }
         
-        var randomAddress = danceCupApiAddresses.Random();
-        _logger.LogDebug("Открыт канал для {address}", randomAddress);
-
-        _channel ??= GrpcChannel.ForAddress(new Uri(randomAddress, UriKind.Absolute));
+            var randomAddress = danceCupApiAddresses.Random();
+            _channel = GrpcChannel.ForAddress(new Uri(randomAddress, UriKind.Absolute));
+            _logger.LogDebug("Открыт канал для {address}", randomAddress);
+        }
         
         return new Api.Presentation.Grpc.DanceCupApi.DanceCupApiClient(_channel);
     }
