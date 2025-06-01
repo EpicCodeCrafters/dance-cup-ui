@@ -32,12 +32,12 @@ public class UserController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> Login(string phoneNumber, string password)
+    public async Task<IActionResult> Login(string Login, string password)
     {
         var getUserTokenResult = await _authClient.GetUserTokenAsync(
             new GetUserTokenRequest
             {
-                Username = phoneNumber,
+                Username = Login,
                 Password = password
             },
             HttpContext.RequestAborted
@@ -54,12 +54,12 @@ public class UserController : Controller
 
     
     [HttpPost]
-    public async Task<IActionResult> Register(string phoneNumber, string password)
+    public async Task<IActionResult> Register(string Login, string password)
     {
         var createUserResult = await _authClient.CreateUserAsync(
             new CreateUserRequest
             {
-                Username = phoneNumber,
+                Username = Login,
                 Password = password
             },
             HttpContext.RequestAborted
@@ -72,7 +72,7 @@ public class UserController : Controller
         var getUserTokenResult = await _authClient.GetUserTokenAsync(
             new GetUserTokenRequest
             {
-                Username = phoneNumber,
+                Username = Login,
                 Password = password
             },
             HttpContext.RequestAborted

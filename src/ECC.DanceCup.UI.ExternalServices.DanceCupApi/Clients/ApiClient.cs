@@ -82,4 +82,74 @@ public class ApiClient : IApiClient
             return Result.Fail(e.Message);
         }
     }
+
+    public async Task<Result<StartTournamentRegistrationResponse>> StartTournamentRegistrationAsync(StartTournamentRegistrationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.StartTournamentRegistrationAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+    
+    public async Task<Result<FinishTournamentRegistrationResponse>> FinishTournamentRegistrationAsync(FinishTournamentRegistrationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.FinishTournamentRegistrationAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+    
+    public async Task<Result<ReopenTournamentRegistrationResponse>> ReopenTournamentRegistrationAsync(ReopenTournamentRegistrationRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.ReopenTournamentRegistrationAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+
+    public async Task<Result<RegisterCoupleForTournamentResponse>> RegisterCoupleForTournamentAsync(RegisterCoupleForTournamentRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.RegisterCoupleForTournamentAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        }
+    }
+
+    public async Task<Result<GetTournamentRegistrationResultResponse>> GetTournamentRegistrationResultAsync(GetTournamentRegistrationResultRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.GetTournamentRegistrationResultAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail(e.Message);
+        } 
+    }
 }

@@ -1,0 +1,67 @@
+﻿@model ECC.DanceCup.Api.Presentation.Grpc.GetTournamentRegistrationResultResponse
+@using ECC.DanceCup.Api.Presentation.Grpc
+
+<div class="container-fluid">
+    <h1>Результаты регистрации на турнир</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Категория</th>
+            <th>Партнёр</th>
+            <th>Партнёрша</th>
+            <th>Организация</th>
+            <th>Тренер 1</th>
+            <th>Тренер 2</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.CategoryName</td>
+                <td>@item.FirstParticipantFullName</td>
+                <td>
+                    @if (item.SecondParticipantFullName != null)
+                    {
+                        @item.SecondParticipantFullName
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+                <td>
+                    @if (item.DanceOrganizationName != null)
+                    {
+                        @item.DanceOrganizationName
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+                <td>
+                    @if (item.FirstTrainerFullName != null)
+                    {
+                        @item.FirstTrainerFullName
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+                <td>
+                    @if (item.SecondTrainerFullName != null)
+                    {
+                        @item.SecondTrainerFullName
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

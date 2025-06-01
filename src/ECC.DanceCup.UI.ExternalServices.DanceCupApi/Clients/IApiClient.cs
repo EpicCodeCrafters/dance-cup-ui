@@ -10,4 +10,9 @@ public interface IApiClient
     Task<Result<CreateTournamentResponse>> CreateTournamentAsync(CreateTournamentRequest request, CancellationToken cancellationToken);
     Task<Result<GetRefereesResponse>> GetRefereesAsync(GetRefereesRequest request, CancellationToken cancellationToken);
     Task<Result<CreateRefereeResponse>> CreateRefereeAsync(CreateRefereeRequest request, CancellationToken cancellationToken);
+    Task<Result<StartTournamentRegistrationResponse>> StartTournamentRegistrationAsync(StartTournamentRegistrationRequest request, CancellationToken cancellationToken);
+    Task<Result<FinishTournamentRegistrationResponse>> FinishTournamentRegistrationAsync(FinishTournamentRegistrationRequest request, CancellationToken cancellationToken);
+    Task<Result<ReopenTournamentRegistrationResponse>> ReopenTournamentRegistrationAsync(ReopenTournamentRegistrationRequest request, CancellationToken cancellationToken);
+    Task<Result<RegisterCoupleForTournamentResponse>> RegisterCoupleForTournamentAsync(RegisterCoupleForTournamentRequest request, CancellationToken cancellationToken);
+    Task<Result<GetTournamentRegistrationResultResponse>> GetTournamentRegistrationResultAsync(GetTournamentRegistrationResultRequest request, CancellationToken cancellationToken);
 }

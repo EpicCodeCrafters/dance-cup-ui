@@ -120,13 +120,6 @@ public class HomeController : Controller
     }
 
     [Authorize]
-    public IActionResult Tournaments()
-    {
-        return View();
-    }
-
-    [Authorize]
-    [HttpPost]
     public async Task<IActionResult> Tournaments(int? pageNumber)
     {
         if (_currentUser.Authenticated)
@@ -135,7 +128,7 @@ public class HomeController : Controller
                 new GetTournamentsRequest
                 {
                     UserId = _currentUser.Id,
-                    PageNumber = pageNumber.Value,
+                    PageNumber = pageNumber??1,
                     PageSize = 10
                 }
                 ,
@@ -183,5 +176,97 @@ public class HomeController : Controller
         {
             return RedirectToAction("Index");
         }
+    }
+
+    [Route("Home/Redactor/{id}")]
+    public async Task<IActionResult> Redactor(long id)
+    {
+        var GetTournaments = await _apiClient.GetTournamentsAsync(
+            new GetTournamentsRequest
+            {
+                UserId = _currentUser.Id,
+                PageNumber = 1,
+                PageSize = 10
+            }
+            ,
+            HttpContext.RequestAborted
+        );
+
+        if (GetTournaments.IsFailed)
+        {
+            return Error("вместо последнего турнира тебе шиш"); //добавить нормальную обработку ошибки
+        }
+
+        var tournamentList = GetTournaments.Value.Tournaments;
+        var tournament = tournamentList.Where(t => t.Id == id);
+        if (tournament.Any())
+        {
+            return View(tournament.First());
+        }
+        else
+        {
+            return View(null);
+        }
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> StartRegistration(long tournamentId)
+    {
+        await _apiClient.StartTournamentRegistrationAsync(
+            new StartTournamentRegistrationRequest
+            {
+                TournamentId = tournamentId
+            },
+            HttpContext.RequestAborted
+        );
+        return RedirectToAction("Index", new { id = tournamentId });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> FinishRegistration(long tournamentId)
+    {
+        await _apiClient.FinishTournamentRegistrationAsync(
+            new FinishTournamentRegistrationRequest
+            {
+                TournamentId = tournamentId
+            },
+            HttpContext.RequestAborted
+        );
+        return RedirectToAction("Index", new { id = tournamentId });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ReopenRegistration(long tournamentId)
+    {
+        await _apiClient.ReopenTournamentRegistrationAsync(
+            new ReopenTournamentRegistrationRequest
+            {
+                TournamentId = tournamentId
+            },
+            HttpContext.RequestAborted
+        );
+        return RedirectToAction("Index", new { id = tournamentId });
+    }
+
+    [Route("Home/PairRegistration/{id}")]
+    public IActionResult PairRegistration(long id)
+    {
+        ViewBag.TournamentId = id;
+        return View();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> RegisterCouple(RegisterCoupleForTournamentRequest request)
+    {
+        await _apiClient.RegisterCoupleForTournamentAsync(request, HttpContext.RequestAborted);
+        return RedirectToAction("RegistrationResult", new { id = request.TournamentId });
+    }
+    
+    [Route("Home/RegistrationResult/{id}")]
+    public async Task<IActionResult> RegistrationResult(long id)
+    {
+        var request = new GetTournamentRegistrationResultRequest { TournamentId = id };
+        var response = await _apiClient.GetTournamentRegistrationResultAsync(request, HttpContext.RequestAborted);
+        return View(response.Value);
     }
 }

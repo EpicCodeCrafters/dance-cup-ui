@@ -16,10 +16,29 @@
             <div class="card-body">
                 <p>@Model.Description</p>
                 <p><strong>Дата:</strong> @Model.Date.ToDateTime().ToString("dd.MM.yyyy")</p>
-                <p><strong>Состояние:</strong> @Model.State</p>
+                @if (Model.State == "Created")
+                {
+                    <p><strong>Состояние:</strong> Турнир создан</p>
+                }
+                else if (Model.State == "RegistrationInProgress")
+                {
+                    <p><strong>Состояние:</strong> Регистрация начата</p>
+                }
+                else if (Model.State == "RegistrationFinished")
+                {
+                    <p><strong>Состояние:</strong> Регистрация окончена</p>
+                }
+                else if (Model.State == "Турнир начат")
+                {
+                    <p><strong>Состояние:</strong> Турнир начат</p>
+                }
+                else
+                {
+                    <p><strong>Состояние:</strong> Неизвестное состояние</p>
+                }
             </div>
             <div class="card-footer">
-                <a href="@Url.Action("Index", "Tournament", new { id = Model.Id })" class="btn btn-danger">
+                <a href="@Url.Action("Redactor", "Home", new { id = Model.Id })" class="btn btn-danger">
                     <i class="mdi mdi-pencil"></i> Редактировать турнир
                 </a>
             </div>
