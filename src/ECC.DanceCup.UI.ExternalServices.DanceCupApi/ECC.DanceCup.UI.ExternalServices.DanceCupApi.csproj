@@ -9,10 +9,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="Protos\dance-cup-api.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ECC.DanceCup.UI.Utils\ECC.DanceCup.UI.Utils.csproj" />
   </ItemGroup>
 </Project>
