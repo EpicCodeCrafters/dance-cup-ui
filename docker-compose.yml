@@ -62,6 +62,13 @@ services:
       - kafka3
     entrypoint: [ "sh", "-c", "sleep 10 && kafka-topics --create --if-not-exists --bootstrap-server kafka1:9092,kafka2:9093,kafka3:9094 --replication-factor 3 --partitions 3 --topic dance_cup_events && echo 'Топик создан'" ]
 
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - 16379:6379
+
   dance-cup-api-db:
     container_name: dance-cup-api-db
     image: postgres
@@ -100,6 +107,7 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      CachingOptions__ConnectionString: "redis:6379"
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -119,6 +127,8 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      CachingOptions__ConnectionString: "redis:6379"
+      CachingOptions__ExpirationMinutes: 30
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -137,6 +147,8 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      CachingOptions__ConnectionString: "redis:6379"
+      CachingOptions__ExpirationMinutes: 30
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -155,6 +167,8 @@ services:
     environment:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
+      CachingOptions__ConnectionString: "redis:6379"
+      CachingOptions__ExpirationMinutes: 30
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
