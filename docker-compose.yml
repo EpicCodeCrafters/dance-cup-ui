@@ -108,6 +108,7 @@ services:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       CachingOptions__ConnectionString: "redis:6379"
+      CachingOptions__ExpirationMinutes: 60
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -128,7 +129,7 @@ services:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 30
+      CachingOptions__ExpirationMinutes: 60
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -148,7 +149,7 @@ services:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 30
+      CachingOptions__ExpirationMinutes: 60
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -168,7 +169,7 @@ services:
       ASPNETCORE_URLS: http://+:80
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 30
+      CachingOptions__ExpirationMinutes: 60
       KafkaOptions__BootstrapServers: "kafka1:9092,kafka2:9093,kafka3:9094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
