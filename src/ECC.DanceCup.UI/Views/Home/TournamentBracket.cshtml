@@ -1,0 +1,117 @@
+﻿@model ECC.DanceCup.Api.Presentation.Grpc.GetTournamentRegistrationResultResponse
+@using ECC.DanceCup.Api.Presentation.Grpc
+
+@{
+    int coupleCount = Model.Items.Count;
+    int totalRounds = (int)Math.Ceiling(Math.Log(coupleCount, 2));
+}
+
+<div class="container-fluid tournament-bracket">
+    <h1>Турнирная сетка</h1>
+    <div class="bracket">
+        <!-- Первый раунд (левый столбец) -->
+        <div class="round round-1">
+            @for (int i = 0; i < coupleCount; i++)
+            {
+                var item = Model.Items[i];
+                <div class="match">
+                    <div class="couple">
+                        <span>@item.FirstParticipantFullName</span>
+                        <br />
+                        <span>@(item.SecondParticipantFullName != null ? item.SecondParticipantFullName : "-")</span>
+                    </div>
+                    <div class="empty-square"></div>
+                </div>
+            }
+        </div>
+
+        <!-- Последующие раунды (пустые) -->
+        @for (int round = 1; round < totalRounds; round++)
+        {
+            int matchesInRound = coupleCount / (int)Math.Pow(2, round);
+            <div class="round round-@(round + 1)">
+                @for (int i = 0; i < matchesInRound; i++)
+                {
+                    <div class="match">
+                        <div class="couple empty"></div>
+                        <div class="empty-square"></div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Финальный раунд (пустой) -->
+        <div class="round round-@(totalRounds + 1)">
+            <div class="match">
+                <div class="couple empty"></div>
+                <div class="empty-square"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-end mb-3">
+    <button class="btn btn-success">
+        <i class="bi bi-file-earmark-excel me-2" style="font-family: 'bootstrap-icons' !important; "></i>Выгрузить для распечатки
+    </button>
+</div>
+<style>
+    .tournament-bracket {
+        background: url('path/to/your/stone-background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .bracket {
+        display: flex;
+        justify-content: space-around;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .round {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+
+    .match {
+        border: 1px solid black; /* Линии черные */
+        padding: 10px;
+        margin: 10px 5px;
+        min-height: 60px;
+        width: 150px;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .couple {
+        text-align: center;
+        width: 100%;
+        font-size: 14px;
+        color: black; /* Надписи черные */
+    }
+
+    .empty {
+        min-height: 40px;
+        color: black; /* Текст в пустых ячейках черный */
+    }
+
+    .empty-square {
+        width: 38px; /* Примерно 1 см при 96 DPI */
+        height: 60px; /* Полная высота match */
+        border: 1px solid black; /* Линии квадрата черные */
+        margin-left: 0; /* Плотно примыкает справа без пробелов */
+    }
+
+    /* Убраны соединительные линии */
+    .match::after,
+    .match::before {
+        display: none;
+    }
+
+    h1 {
+        color: black; /* Заголовок черный */
+    }
+</style>

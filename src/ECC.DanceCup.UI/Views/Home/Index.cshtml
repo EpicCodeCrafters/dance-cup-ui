@@ -1,1 +1,53 @@
-﻿
+﻿@model ECC.DanceCup.Api.Presentation.Grpc.GetTournamentsResponse.Types.GetTournamentsItem
+@using ECC.DanceCup.Api.Presentation.Grpc
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Мой последний турнир</h1>
+        </div>
+    </div>
+    @if (Model != null)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h3>@Model.Name</h3>
+            </div>
+            <div class="card-body">
+                <p>@Model.Description</p>
+                <p><strong>Дата:</strong> @Model.Date.ToDateTime().ToString("dd.MM.yyyy")</p>
+                @if (Model.State == "Created")
+                {
+                    <p><strong>Состояние:</strong> Турнир создан</p>
+                }
+                else if (Model.State == "RegistrationInProgress")
+                {
+                    <p><strong>Состояние:</strong> Регистрация начата</p>
+                }
+                else if (Model.State == "RegistrationFinished")
+                {
+                    <p><strong>Состояние:</strong> Регистрация окончена</p>
+                }
+                else if (Model.State == "Турнир начат")
+                {
+                    <p><strong>Состояние:</strong> Турнир начат</p>
+                }
+                else
+                {
+                    <p><strong>Состояние:</strong> Неизвестное состояние</p>
+                }
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Redactor", "Home", new { id = Model.Id })" class="btn btn-danger">
+                    <i class="mdi mdi-pencil"></i> Редактировать турнир
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            У вас пока нет созданных турниров
+        </div>
+    }
+</div>

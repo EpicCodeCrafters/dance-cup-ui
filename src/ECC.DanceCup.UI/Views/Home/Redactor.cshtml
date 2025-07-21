@@ -1,0 +1,113 @@
+﻿@model ECC.DanceCup.Api.Presentation.Grpc.GetTournamentsResponse.Types.GetTournamentsItem
+@using ECC.DanceCup.Api.Presentation.Grpc
+
+<div class="container-fluid">
+    <h1>Редактирование турнира</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3>@Model.Name</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Описание</label>
+                <input type="text" class="form-control" value="@Model.Description" disabled>
+            </div>
+            <div class="form-group">
+                <label>Дата</label>
+                <input type="text" class="form-control" value="@Model.Date.ToDateTime().ToString("dd.MM.yyyy")"
+                       disabled>
+            </div>
+            <div class="form-group">
+                <label>Состояние</label>
+                @if (Model.State == "Created")
+                {
+                    <input type="text" class="form-control" value="Турнир создан" disabled>
+                }
+                else if (Model.State == "RegistrationInProgress")
+                {
+                    <input type="text" class="form-control" value="Регистрация начата" disabled>
+                }
+                else if (Model.State == "RegistrationFinished")
+                {
+                    <input type="text" class="form-control" value="Регистрация окончена" disabled>
+                }
+                else if (Model.State == "Турнир начат")
+                {
+                    <input type="text" class="form-control" value="Турнир начат" disabled>
+                }
+            </div>
+
+            @if (Model.State == "Created")
+            {
+                <form asp-action="StartRegistration" method="post">
+                    <input type="hidden" name="tournamentId" value="@Model.Id"/>
+                    <button type="submit" class="btn btn-primary">Открыть регистрацию</button>
+                </form>
+            }
+            else if (Model.State == "RegistrationInProgress")
+            {
+                <form asp-action="FinishRegistration" method="post" class="d-inline">
+                    <input type="hidden" name="tournamentId" value="@Model.Id"/>
+                    <br/>
+                    <button type="submit" class="btn btn-warning">Закрыть регистрацию</button>
+                </form>
+                <div class="form-group mt-3">
+                    <label>Ссылка для регистрации</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control"
+                               value=@("http://localhost:5215/Home/PairRegistration/" + @Model.Id.ToString())
+                               id="registrationLink" readonly>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
+                                Скопировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.State == "RegistrationFinished")
+            {
+                <form asp-action="ReopenRegistration" method="post" class="d-inline">
+                    <input type="hidden" name="tournamentId" value="@Model.Id"/>
+                    <br/>
+                    <button type="submit" class="btn btn-info">Снова открыть регистрацию</button>
+                </form>
+                <br/>
+                <form asp-action="StartTournament" method="post">
+                    <input type="hidden" name="tournamentId" value="@Model.Id"/>
+                    <br/>
+                    <button type="submit" class="btn btn-success">Начать турнир</button>
+                </form>
+                <br/>
+                <form>
+                    <a href="@Url.Action("RegistrationResult", "Home", new { id = Model.Id })" class="btn btn-info">
+                        <i class="mdi mdi-view-list"></i> Просмотреть результаты регистрации
+                    </a>
+                </form>
+            }
+            else if (Model.State == "Турнир начат")
+            {
+                <form asp-action="FinishTournament" method="post">
+                    <input type="hidden" name="tournamentId" value="@Model.Id"/>
+                    <button type="submit" class="btn btn-danger">Завершить турнир</button>
+                </form>
+                <br/>
+                <form>
+                    <a href="@Url.Action("RegistrationResult", "Home", new { id = Model.Id })" class="btn btn-info">
+                        <i class="mdi mdi-view-list"></i> Просмотреть результаты регистрации
+                    </a>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard() {
+        var copyText = document.getElementById("registrationLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // Для мобильных устройств
+        document.execCommand("copy");
+        alert("Ссылка скопирована: " + copyText.value);
+    }
+</script>
