@@ -79,7 +79,7 @@ public class UserController : Controller
         );
         if (getUserTokenResult.IsFailed)
         {
-            return RedirectToAction("Error", "Home","shish tebe a ne token dlya registachii");//добавить нормальную обработку ошибки
+            return RedirectToAction("Error", "Home", "Failed to retrieve a token during registration. Please try again later.");//добавить нормальную обработку ошибки
         }
         
         HttpContext.Session.SetString("token", getUserTokenResult.Value.Token);
