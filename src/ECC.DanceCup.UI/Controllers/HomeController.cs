@@ -194,7 +194,7 @@ public class HomeController : Controller
 
         if (GetTournaments.IsFailed)
         {
-            return Error("вместо последнего турнира тебе шиш"); //добавить нормальную обработку ошибки
+            return Error("Failed to retrieve tournaments. Please try again later or contact support if the issue persists."); // Improved error message
         }
 
         var tournamentList = GetTournaments.Value.Tournaments;
