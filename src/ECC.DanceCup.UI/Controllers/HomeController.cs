@@ -77,7 +77,7 @@ public class HomeController : Controller
         );
         if (getDancesResult.IsFailed)
         {
-            return Error("dances");
+            return Error("Failed to fetch dance data. Please try again later or contact support if the issue persists.");
         }
         if (getRefereesResult.IsFailed)
         {
