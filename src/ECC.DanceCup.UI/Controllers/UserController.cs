@@ -44,7 +44,7 @@ public class UserController : Controller
         );
         if (getUserTokenResult.IsFailed)
         { 
-            return RedirectToAction("Error", "Home","shish tebe a ne token dlya vhoda");//добавить нормальную обработку ошибки
+            return RedirectToAction("Error", "Home", "Failed to retrieve user token. Please check your credentials and try again."); // Add proper error handling
         }
         
         HttpContext.Session.SetString("token", getUserTokenResult.Value.Token);
