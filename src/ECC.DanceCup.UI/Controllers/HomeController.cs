@@ -40,7 +40,7 @@ public class HomeController : Controller
             );
             if (GetLastTournament.IsFailed)
             {
-                return Error("вместо последнего турнира тебе шиш"); //добавить нормальную обработку ошибки
+                return Error("Unable to retrieve the latest tournament. Please try again later or contact support if the issue persists."); // Provide a clear and professional error message
             }
 
             var tournamentList = GetLastTournament.Value.Tournaments;
