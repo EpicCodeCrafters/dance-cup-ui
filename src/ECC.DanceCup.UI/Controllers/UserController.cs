@@ -67,7 +67,7 @@ public class UserController : Controller
         if (createUserResult.IsFailed)
         {
             _logger.LogDebug(createUserResult.StringifyErrors());
-            return RedirectToAction("Error", "Home","shish tebe a ne registachia");//добавить нормальную обработку ошибки
+            return RedirectToAction("Error", "Home", "Registration failed. Please try again later.");// Proper error handling
         }
         var getUserTokenResult = await _authClient.GetUserTokenAsync(
             new GetUserTokenRequest
