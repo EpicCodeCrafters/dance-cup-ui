@@ -81,7 +81,7 @@ public class HomeController : Controller
         }
         if (getRefereesResult.IsFailed)
         {
-            return Error("referees");
+            return Error("Failed to fetch referee data. Please try again later or contact support if the issue persists.");
         }
         
         return View((getDancesResult.Value, getRefereesResult.Value));
