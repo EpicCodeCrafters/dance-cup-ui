@@ -255,6 +255,11 @@ public class HomeController : Controller
         return View();
     }
     
+    public IActionResult Shablon()
+    {
+        return View();
+    }
+    
     [HttpPost]
     public async Task<IActionResult> RegisterCouple(RegisterCoupleForTournamentRequest request)
     {
@@ -267,6 +272,21 @@ public class HomeController : Controller
     {
         var request = new GetTournamentRegistrationResultRequest { TournamentId = id };
         var response = await _apiClient.GetTournamentRegistrationResultAsync(request, HttpContext.RequestAborted);
+        return View(response.Value);
+    }
+    
+    [Route("Home/TournamentBracket/{id}")]
+    public async Task<IActionResult> TournamentBracket(long id)
+    {
+        var request = new GetTournamentRegistrationResultRequest { TournamentId = id };
+        var response = await _apiClient.GetTournamentRegistrationResultAsync(request, HttpContext.RequestAborted);
+
+        if (response.IsFailed)
+        {
+            _logger.LogError("Ошибка при получении данных о регистрации на турнир: {Errors}", response.StringifyErrors());
+            return Error("Не удалось получить данные о регистрации на турнир.");
+        }
+
         return View(response.Value);
     }
 }
