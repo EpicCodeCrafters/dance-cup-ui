@@ -48,6 +48,8 @@ webApplicationBuilder.Services.AddSession();
 
 var webApplication = webApplicationBuilder.Build();
 
+webApplication.UseHttpMetrics();
+
 if (!webApplication.Environment.IsDevelopment())
 {
     webApplication.UseExceptionHandler("/Home/Error");
@@ -65,8 +67,6 @@ webApplication.UseMiddleware<TokenWritingMiddleware>();
 
 webApplication.UseAuthentication();
 webApplication.UseAuthorization();
-
-webApplication.UseHttpMetrics();
 
 webApplication.MapControllerRoute(
     name: "default",
