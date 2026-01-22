@@ -48,8 +48,6 @@ webApplicationBuilder.Services.AddSession();
 
 var webApplication = webApplicationBuilder.Build();
 
-webApplication.UseHttpMetrics();
-
 if (!webApplication.Environment.IsDevelopment())
 {
     webApplication.UseExceptionHandler("/Home/Error");
@@ -62,6 +60,8 @@ webApplication.UseHttpsRedirection();
 webApplication.UseStaticFiles();
 
 webApplication.UseRouting();
+
+webApplication.UseHttpMetrics();
 
 webApplication.UseMiddleware<TokenWritingMiddleware>();
 
