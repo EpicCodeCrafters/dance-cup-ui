@@ -5,6 +5,7 @@ using ECC.DanceCup.UI.ExternalServices.DanceCupAuth;
 using ECC.DanceCup.UI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Prometheus;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,8 @@ webApplication.UseStaticFiles();
 
 webApplication.UseRouting();
 
+webApplication.UseHttpMetrics();
+
 webApplication.UseMiddleware<TokenWritingMiddleware>();
 
 webApplication.UseAuthentication();
@@ -69,6 +72,8 @@ webApplication.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
+
+webApplication.MapMetrics();
 
 await webApplication.CheckExternalServicesHealthAsync();
 
