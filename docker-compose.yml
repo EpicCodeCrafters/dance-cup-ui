@@ -253,3 +253,4 @@ services:
 volumes:
   dance-cup-api-db-volume:
   dance-cup-auth-db-volume:
+  minio-data:
