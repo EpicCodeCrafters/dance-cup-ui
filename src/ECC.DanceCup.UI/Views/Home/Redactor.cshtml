@@ -100,9 +100,33 @@
             }
         </div>
     </div>
+
+    <!-- File Attachments Section -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>Прикреплённые файлы</h4>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Загрузить файл</label>
+                <input type="file" id="fileInput" class="form-control-file" />
+                <button type="button" class="btn btn-primary mt-2" onclick="uploadFile()">Загрузить</button>
+            </div>
+            <div id="uploadStatus" class="mt-2"></div>
+            
+            <hr />
+            
+            <h5>Список файлов</h5>
+            <div id="filesList" class="mt-3">
+                <p class="text-muted">Загрузка...</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+    const tournamentId = @Model.Id;
+
     function copyToClipboard() {
         var copyText = document.getElementById("registrationLink");
         copyText.select();
@@ -110,4 +134,76 @@
         document.execCommand("copy");
         alert("Ссылка скопирована: " + copyText.value);
     }
+
+    async function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
+        const statusDiv = document.getElementById('uploadStatus');
+        
+        if (!fileInput.files || fileInput.files.length === 0) {
+            statusDiv.innerHTML = '<div class="alert alert-warning">Пожалуйста, выберите файл</div>';
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('tournamentId', tournamentId);
+
+        statusDiv.innerHTML = '<div class="alert alert-info">Загрузка...</div>';
+
+        try {
+            const response = await fetch('/Home/UploadAttachment', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                statusDiv.innerHTML = '<div class="alert alert-success">' + result.message + '</div>';
+                fileInput.value = '';
+                loadFilesList();
+            } else {
+                statusDiv.innerHTML = '<div class="alert alert-danger">Ошибка: ' + result.message + '</div>';
+            }
+        } catch (error) {
+            statusDiv.innerHTML = '<div class="alert alert-danger">Ошибка при загрузке файла</div>';
+        }
+    }
+
+    async function loadFilesList() {
+        const filesListDiv = document.getElementById('filesList');
+        
+        try {
+            const response = await fetch(`/Home/ListAttachments/${tournamentId}`);
+            const result = await response.json();
+
+            if (result.success && result.attachments && result.attachments.length > 0) {
+                let html = '<ul class="list-group">';
+                result.attachments.forEach(att => {
+                    html += `
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>${att.name}</span>
+                            <a href="/Home/DownloadAttachment/${tournamentId}/${att.number}" 
+                               class="btn btn-sm btn-primary" 
+                               download>
+                                <i class="mdi mdi-download"></i> Скачать
+                            </a>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                filesListDiv.innerHTML = html;
+            } else {
+                filesListDiv.innerHTML = '<p class="text-muted">Нет прикреплённых файлов</p>';
+            }
+        } catch (error) {
+            filesListDiv.innerHTML = '<p class="text-danger">Ошибка при загрузке списка файлов</p>';
+        }
+    }
+
+    // Load files list on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFilesList();
+    });
 </script>

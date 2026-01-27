@@ -289,4 +289,96 @@ public class HomeController : Controller
 
         return View(response.Value);
     }
+
+    [HttpPost]
+    [Route("Home/UploadAttachment")]
+    public async Task<IActionResult> UploadAttachment(long tournamentId, IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return Json(new { success = false, message = "Файл не выбран" });
+        }
+
+        try
+        {
+            using var stream = file.OpenReadStream();
+            var result = await _apiClient.AddTournamentAttachmentAsync(tournamentId, file.FileName, stream, HttpContext.RequestAborted);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError("Ошибка при загрузке файла: {Errors}", result.StringifyErrors());
+                return Json(new { success = false, message = result.StringifyErrors() });
+            }
+
+            return Json(new { success = true, message = "Файл успешно загружен" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при загрузке файла");
+            return Json(new { success = false, message = "Произошла ошибка при загрузке файла" });
+        }
+    }
+
+    [HttpGet]
+    [Route("Home/ListAttachments/{tournamentId}")]
+    public async Task<IActionResult> ListAttachments(long tournamentId)
+    {
+        try
+        {
+            var result = await _apiClient.ListTournamentAttachmentsAsync(
+                new ListTournamentAttachmentsRequest { TournamentId = tournamentId },
+                HttpContext.RequestAborted);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError("Ошибка при получении списка файлов: {Errors}", result.StringifyErrors());
+                return Json(new { success = false, message = result.StringifyErrors() });
+            }
+
+            var attachments = result.Value.Attachments.Select(a => new
+            {
+                number = a.Number,
+                name = a.Name
+            }).ToList();
+
+            return Json(new { success = true, attachments = attachments });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при получении списка файлов");
+            return Json(new { success = false, message = "Произошла ошибка при получении списка файлов" });
+        }
+    }
+
+    [HttpGet]
+    [Route("Home/DownloadAttachment/{tournamentId}/{attachmentNumber}")]
+    public async Task<IActionResult> DownloadAttachment(long tournamentId, int attachmentNumber)
+    {
+        try
+        {
+            var result = await _apiClient.GetTournamentAttachmentAsync(
+                new GetTournamentAttachmentRequest
+                {
+                    TournamentId = tournamentId,
+                    AttachmentNumber = attachmentNumber,
+                    MaxBytesCount = 1024 * 1024 // 1MB chunks
+                },
+                HttpContext.RequestAborted);
+
+            if (result.IsFailed)
+            {
+                _logger.LogError("Ошибка при скачивании файла: {Errors}", result.StringifyErrors());
+                return NotFound();
+            }
+
+            var (fileName, fileStream) = result.Value;
+            // ASP.NET Core's File() method will dispose the stream after sending
+            return File(fileStream, "application/octet-stream", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при скачивании файла");
+            return StatusCode(500);
+        }
+    }
 }

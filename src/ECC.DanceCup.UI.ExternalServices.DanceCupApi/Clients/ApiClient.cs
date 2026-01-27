@@ -152,4 +152,92 @@ public class ApiClient : IApiClient
             return Result.Fail(e.Message);
         } 
     }
+
+    public async Task<Result<AddTournamentAttachmentResponse>> AddTournamentAttachmentAsync(long tournamentId, string fileName, Stream fileStream, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var call = _client.AddTournamentAttachment(cancellationToken: cancellationToken);
+            
+            // Send attachment info first
+            await call.RequestStream.WriteAsync(new AddTournamentAttachmentRequest
+            {
+                AttachmentInfo = new AddTournamentAttachmentRequest.Types.AttachmentInfo
+                {
+                    TournamentId = tournamentId,
+                    Name = fileName
+                }
+            });
+
+            // Stream file content in chunks
+            const int chunkSize = 64 * 1024; // 64KB chunks
+            var buffer = new byte[chunkSize];
+            int bytesRead;
+            
+            while ((bytesRead = await fileStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
+            {
+                var chunk = new byte[bytesRead];
+                Array.Copy(buffer, chunk, bytesRead);
+                
+                await call.RequestStream.WriteAsync(new AddTournamentAttachmentRequest
+                {
+                    AttachmentBytes = Google.Protobuf.ByteString.CopyFrom(chunk)
+                });
+            }
+            
+            await call.RequestStream.CompleteAsync();
+            var response = await call.ResponseAsync;
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail($"Не удалось загрузить файл: {e.Message}");
+        }
+    }
+
+    public async Task<Result<ListTournamentAttachmentsResponse>> ListTournamentAttachmentsAsync(ListTournamentAttachmentsRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.ListTournamentAttachmentsAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail($"Не удалось получить список файлов: {e.Message}");
+        }
+    }
+
+    public async Task<Result<(string fileName, Stream fileStream)>> GetTournamentAttachmentAsync(GetTournamentAttachmentRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var call = _client.GetTournamentAttachment(request, cancellationToken: cancellationToken);
+            
+            string fileName = string.Empty;
+            var memoryStream = new MemoryStream();
+            
+            await foreach (var response in call.ResponseStream.ReadAllAsync(cancellationToken))
+            {
+                if (response.ContentCase == GetTournamentAttachmentResponse.ContentOneofCase.AttachmentInfo)
+                {
+                    fileName = response.AttachmentInfo.Name;
+                }
+                else if (response.ContentCase == GetTournamentAttachmentResponse.ContentOneofCase.AttachmentBytes)
+                {
+                    await memoryStream.WriteAsync(response.AttachmentBytes.Memory, cancellationToken);
+                }
+            }
+            
+            memoryStream.Position = 0;
+            // Note: The caller (ASP.NET Core File() method) is responsible for disposing the stream
+            return (fileName, memoryStream);
+        }
+        catch (RpcException e)
+        {
+            return Result.Fail($"Не удалось скачать файл: {e.Message}");
+        }
+    }
 }
