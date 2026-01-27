@@ -15,4 +15,7 @@ public interface IApiClient
     Task<Result<ReopenTournamentRegistrationResponse>> ReopenTournamentRegistrationAsync(ReopenTournamentRegistrationRequest request, CancellationToken cancellationToken);
     Task<Result<RegisterCoupleForTournamentResponse>> RegisterCoupleForTournamentAsync(RegisterCoupleForTournamentRequest request, CancellationToken cancellationToken);
     Task<Result<GetTournamentRegistrationResultResponse>> GetTournamentRegistrationResultAsync(GetTournamentRegistrationResultRequest request, CancellationToken cancellationToken);
+    Task<Result<AddTournamentAttachmentResponse>> AddTournamentAttachmentAsync(long tournamentId, string fileName, Stream fileStream, CancellationToken cancellationToken);
+    Task<Result<ListTournamentAttachmentsResponse>> ListTournamentAttachmentsAsync(ListTournamentAttachmentsRequest request, CancellationToken cancellationToken);
+    Task<Result<(string fileName, Stream fileStream)>> GetTournamentAttachmentAsync(GetTournamentAttachmentRequest request, CancellationToken cancellationToken);
 }
