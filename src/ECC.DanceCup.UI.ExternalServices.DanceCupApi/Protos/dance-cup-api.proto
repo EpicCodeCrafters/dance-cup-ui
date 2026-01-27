@@ -20,6 +20,10 @@ service DanceCupApi {
     rpc FinishTournamentRegistration (FinishTournamentRegistrationRequest) returns (FinishTournamentRegistrationResponse);
     rpc ReopenTournamentRegistration (ReopenTournamentRegistrationRequest) returns (ReopenTournamentRegistrationResponse);
     rpc RegisterCoupleForTournament (RegisterCoupleForTournamentRequest) returns (RegisterCoupleForTournamentResponse);
+
+    rpc AddTournamentAttachment (stream AddTournamentAttachmentRequest) returns (AddTournamentAttachmentResponse);
+    rpc ListTournamentAttachments (ListTournamentAttachmentsRequest) returns (ListTournamentAttachmentsResponse);
+    rpc GetTournamentAttachment (GetTournamentAttachmentRequest) returns (stream GetTournamentAttachmentResponse);
 }
 
 message GetDancesRequest { }
@@ -64,7 +68,7 @@ message CreateTournamentRequest {
     google.protobuf.Timestamp date = 4;
     repeated CreateCategoryModel create_category_models = 5;
 }
-
+        
 message CreateTournamentResponse {
     int64 tournament_id = 1;
 }
@@ -141,3 +145,48 @@ message RegisterCoupleForTournamentRequest {
 }
 
 message RegisterCoupleForTournamentResponse { }
+
+message AddTournamentAttachmentRequest {
+    oneof content {
+        AttachmentInfo attachment_info = 1;
+        bytes attachment_bytes = 2;
+    }
+
+    message AttachmentInfo {
+        int64 tournament_id = 1;
+        string name = 2;
+    }
+}
+
+message AddTournamentAttachmentResponse { }
+
+message ListTournamentAttachmentsRequest {
+    int64 tournament_id = 1;
+}
+
+message ListTournamentAttachmentsResponse {
+    repeated TournamentAttachment attachments = 1;
+    
+    message TournamentAttachment {
+        int32 number = 1;
+        string name = 2;
+    }
+}
+
+message GetTournamentAttachmentRequest {
+    int64 tournament_id = 1;
+    int32 attachment_number = 2;
+    int32 max_bytes_count = 3;
+}
+
+message GetTournamentAttachmentResponse {
+    oneof content {
+        AttachmentInfo attachment_info = 1;
+        bytes attachment_bytes = 2;
+    }
+
+    message AttachmentInfo {
+        string name = 1;
+        int64 total_bytes_count = 2;
+    }
+}
