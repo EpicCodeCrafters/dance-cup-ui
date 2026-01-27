@@ -372,6 +372,7 @@ public class HomeController : Controller
             }
 
             var (fileName, fileStream) = result.Value;
+            // ASP.NET Core's File() method will dispose the stream after sending
             return File(fileStream, "application/octet-stream", fileName);
         }
         catch (Exception ex)

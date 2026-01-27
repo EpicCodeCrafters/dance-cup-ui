@@ -174,7 +174,7 @@ public class ApiClient : IApiClient
             var buffer = new byte[chunkSize];
             int bytesRead;
             
-            while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+            while ((bytesRead = await fileStream.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
             {
                 var chunk = new byte[bytesRead];
                 Array.Copy(buffer, chunk, bytesRead);
@@ -227,11 +227,12 @@ public class ApiClient : IApiClient
                 }
                 else if (response.ContentCase == GetTournamentAttachmentResponse.ContentOneofCase.AttachmentBytes)
                 {
-                    await memoryStream.WriteAsync(response.AttachmentBytes.ToByteArray(), 0, response.AttachmentBytes.Length, cancellationToken);
+                    await memoryStream.WriteAsync(response.AttachmentBytes.Memory, cancellationToken);
                 }
             }
             
             memoryStream.Position = 0;
+            // Note: The caller (ASP.NET Core File() method) is responsible for disposing the stream
             return (fileName, memoryStream);
         }
         catch (RpcException e)
