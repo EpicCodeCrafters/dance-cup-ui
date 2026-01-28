@@ -68,7 +68,7 @@ message CreateTournamentRequest {
     google.protobuf.Timestamp date = 4;
     repeated CreateCategoryModel create_category_models = 5;
 }
-        
+
 message CreateTournamentResponse {
     int64 tournament_id = 1;
 }
@@ -95,6 +95,12 @@ message GetTournamentsResponse {
         string description = 4;
         google.protobuf.Timestamp date = 5;
         string state = 6;
+        repeated Category categories = 7;
+
+        message Category {
+            int64 id = 1;
+            string name = 2;
+        }
     }
 }
 
@@ -166,7 +172,7 @@ message ListTournamentAttachmentsRequest {
 
 message ListTournamentAttachmentsResponse {
     repeated TournamentAttachment attachments = 1;
-    
+
     message TournamentAttachment {
         int32 number = 1;
         string name = 2;

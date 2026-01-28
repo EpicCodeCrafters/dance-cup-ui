@@ -249,9 +249,16 @@ public class HomeController : Controller
     }
 
     [Route("Home/PairRegistration/{id}")]
-    public IActionResult PairRegistration(long id)
+    public async Task<IActionResult> PairRegistration(long id)
     {
         ViewBag.TournamentId = id;
+        
+        var result = await _apiClient.GetTournamentsAsync(new GetTournamentsRequest{PageNumber = 1, PageSize = 1, UserId = 1}, HttpContext.RequestAborted);
+
+        var categories = result.Value.Tournaments.Where(tournament => tournament.Id == id).ToList()[0].Categories;
+        
+        ViewBag.Categories = categories;
+        
         return View();
     }
     
