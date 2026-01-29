@@ -6,6 +6,10 @@ using ECC.DanceCup.UI.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Prometheus;
+using Serilog;
+using Serilog.Sinks.Kafka;
+
+const string serviceName = "dance-cup-ui";
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +50,18 @@ webApplicationBuilder.Services
 
 webApplicationBuilder.Services.AddSession();
 
+webApplicationBuilder.Services.AddSerilog(loggerConfiguration => loggerConfiguration
+    .ReadFrom.Configuration(webApplicationBuilder.Configuration)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Service", serviceName)
+    .Enrich.WithProperty("Environment", webApplicationBuilder.Environment.EnvironmentName)
+    .WriteTo.Kafka(
+        bootstrapServers: webApplicationBuilder.Configuration["KafkaOptions:BootstrapServers"],
+        topic: webApplicationBuilder.Configuration["KafkaOptions:Topics:DanceCupLogs:Name"]
+    )
+    .WriteTo.Console()
+);
+
 var webApplication = webApplicationBuilder.Build();
 
 if (!webApplication.Environment.IsDevelopment())
@@ -53,6 +69,8 @@ if (!webApplication.Environment.IsDevelopment())
     webApplication.UseExceptionHandler("/Home/Error");
     webApplication.UseHsts();
 }
+
+webApplication.UseSerilogRequestLogging();
 
 webApplication.UseSession();
 
@@ -77,4 +95,11 @@ webApplication.MapMetrics();
 
 await webApplication.CheckExternalServicesHealthAsync();
 
-await webApplication.RunAsync();
+try
+{
+    await webApplication.RunAsync();
+}
+finally
+{
+    Log.CloseAndFlush();
+}
