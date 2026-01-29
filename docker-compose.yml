@@ -84,6 +84,20 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29093,kafka3:29094
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
       KAFKA_CLUSTERS_0_READONLY: "false"
+      
+  clickhouse:
+    container_name: clickhouse
+    image: clickhouse/clickhouse-server:24.3
+    ports:
+      - "8123:8123"
+      - "9010:9000"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: admin
+      CLICKHOUSE_PASSWORD: secret
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     container_name: redis
@@ -309,5 +323,6 @@ volumes:
   dance-cup-api-db-volume:
   dance-cup-auth-db-volume:
   minio-data:
+  clickhouse-data:
   prometheus-data:
   grafana-data:
