@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+
+scrape_configs:
+  - job_name: 'dance-cup-api'
+    static_configs:
+      - targets: ['dance-cup-api:81', 'dance-cup-api-2:81', 'dance-cup-api-3:81']
+        labels:
+          service: 'dance-cup-api'
+
+  - job_name: 'dance-cup-auth'
+    static_configs:
+      - targets: ['dance-cup-auth:81']
+        labels:
+          service: 'dance-cup-auth'
