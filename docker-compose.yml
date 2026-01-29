@@ -65,7 +65,7 @@ services:
       - kafka3
     entrypoint: [
       "sh", "-c",
-      "sleep 15 && \
+      "sleep 10 && \
          kafka-topics --create --if-not-exists --bootstrap-server kafka1:29092,kafka2:29093,kafka3:29094 --replication-factor 3 --partitions 3 --topic dance_cup_events && \
          kafka-topics --create --if-not-exists --bootstrap-server kafka1:29092,kafka2:29093,kafka3:29094 --replication-factor 3 --partitions 12 --topic dance_cup_logs"
     ]
@@ -153,7 +153,8 @@ services:
     depends_on:
       - dance-cup-api-db
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       ObjectStorage__ServiceURL: "http://object-storage:9000"
       ObjectStorage__AccessKey: "admin"
@@ -178,7 +179,8 @@ services:
     ports:
       - 81:80
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       ObjectStorage__ServiceURL: "http://object-storage:9000"
       ObjectStorage__AccessKey: "admin"
@@ -202,7 +204,8 @@ services:
     ports:
       - 812:80
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       ObjectStorage__ServiceURL: "http://object-storage:9000"
       ObjectStorage__AccessKey: "admin"
@@ -226,7 +229,8 @@ services:
     ports:
       - 813:80
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-api-db; Port=5432; Database=dance-cup-api; Username=postgres-user; Password=postgres;"
       ObjectStorage__ServiceURL: "http://object-storage:9000"
       ObjectStorage__AccessKey: "admin"
@@ -246,7 +250,8 @@ services:
     depends_on:
       - dance-cup-auth-db
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-auth-db; Port=5432; Database=dance-cup-auth; Username=postgres-user; Password=postgres;"
       SecurityOptions__Secret: "cfa4a6f7-8d5d-4c61-aec9-0791d743dbb9_d2f60f8e-1d61-4c4a-92a5-4f9a90745691"
       SecurityOptions__Audience: "dance-cup-audience"
@@ -268,7 +273,8 @@ services:
     ports:
       - 82:80
     environment:
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80;http://+:81
       StorageOptions__ConnectionString: "Host=dance-cup-auth-db; Port=5432; Database=dance-cup-auth; Username=postgres-user; Password=postgres;"
       SecurityOptions__Secret: "cfa4a6f7-8d5d-4c61-aec9-0791d743dbb9_d2f60f8e-1d61-4c4a-92a5-4f9a90745691"
       SecurityOptions__Audience: "dance-cup-audience"
