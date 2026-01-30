@@ -35,8 +35,8 @@
 )
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(Timestamp)
-ORDER BY (Timestamp, TraceId, id);
--- TTL toDateTime(Timestamp) + INTERVAL 1 MINUTE;
+ORDER BY (Timestamp, TraceId, id)
+TTL toDateTime(Timestamp) + INTERVAL 15 MINUTE DELETE;
 
 CREATE TABLE IF NOT EXISTS kafka_messages
 (
@@ -56,7 +56,7 @@ AS SELECT
     parseDateTime64BestEffort(
             JSONExtractString(value, 'Timestamp'),
             6
-    ) AS timestamp,
+    ) AS Timestamp,
 
     JSONExtractString(value, 'Level') AS Level,
     JSONExtractString(value, 'MessageTemplate') AS MessageTemplate,
