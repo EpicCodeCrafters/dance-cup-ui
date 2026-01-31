@@ -17,8 +17,9 @@ This setup implements automatic log archiving from ClickHouse to S3 (MinIO) stor
    - Bucket: `logs-archive`
 
 3. **Materialized View** (`logs_to_archive`):
-   - Automatically copies all logs from `logs` to `logs_archive`
-   - Runs in real-time as logs are inserted
+   - Automatically archives all logs from Kafka to `logs_archive`
+   - Runs in real-time as logs arrive from Kafka
+   - Parallel to the main logs ingestion pipeline
 
 ### Data Flow
 ```
