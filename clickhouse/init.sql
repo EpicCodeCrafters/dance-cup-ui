@@ -140,4 +140,51 @@ ORDER BY (Timestamp, TraceId, id)
 SETTINGS storage_policy = 's3_main';
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS logs_to_archive TO logs_archive
-AS SELECT * FROM logs;
+AS SELECT
+    parseDateTime64BestEffort(
+            JSONExtractString(value, 'Timestamp'),
+            6
+    ) AS Timestamp,
+
+    JSONExtractString(value, 'Level') AS Level,
+    JSONExtractString(value, 'MessageTemplate') AS MessageTemplate,
+    JSONExtractString(value, 'RenderedMessage') AS RenderedMessage,
+    JSONExtractString(value, 'TraceId') AS TraceId,
+    JSONExtractString(value, 'SpanId') AS SpanId,
+
+    JSONExtractRaw(value, 'Properties') AS props,
+
+    JSONExtractFloat(props,   'ElapsedMilliseconds')             AS ElapsedMilliseconds,
+    JSONExtractInt(props,     'StatusCode')                      AS StatusCode,
+    JSONExtractString(props,  'ContentType')                     AS ContentType,
+    CASE
+        WHEN JSONHas(props, 'ContentLength') = 0 OR JSONExtractString(props, 'ContentLength') = 'null'
+            THEN CAST(NULL AS Nullable(Int32))
+        ELSE CAST(JSONExtractInt(props, 'ContentLength') AS Nullable(Int32))
+    END AS ContentLength,
+    JSONExtractString(props,  'Protocol')                        AS Protocol,
+    JSONExtractString(props,  'Method')                          AS Method,
+    JSONExtractString(props,  'Scheme')                          AS Scheme,
+    JSONExtractString(props,  'Host')                            AS Host,
+    JSONExtractString(props,  'PathBase')                        AS PathBase,
+    JSONExtractString(props,  'Path')                            AS Path,
+    JSONExtractString(props,  'QueryString')                     AS QueryString,
+
+    JSONExtractInt(JSONExtractRaw(props, 'EventId'), 'Id')      AS EventId_Id,
+
+    JSONExtractString(props,  'SourceContext')                  AS SourceContext,
+    JSONExtractString(props,  'RequestId')                      AS RequestId,
+    JSONExtractString(props,  'RequestPath')                    AS RequestPath,
+    JSONExtractString(props,  'ConnectionId')                   AS ConnectionId,
+    JSONExtractString(props,  'Service')                        AS Service,
+    JSONExtractString(props,  'Environment')                    AS Environment,
+
+    _topic   AS _kafka_topic,
+    _partition AS _kafka_partition,
+    _offset  AS _kafka_offset,
+    toDateTime64(_timestamp, 3) AS _kafka_timestamp,
+    
+    generateUUIDv4() AS id
+   
+FROM kafka_messages
+WHERE length(value) > 0;
