@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <storage_configuration>
+        <disks>
+            <s3_disk>
+                <type>s3</type>
+                <endpoint>http://object-storage:9000/logs-archive/</endpoint>
+                <access_key_id>admin</access_key_id>
+                <secret_access_key>admin123</secret_access_key>
+                <region></region>
+                <use_environment_credentials>false</use_environment_credentials>
+            </s3_disk>
+        </disks>
+        <policies>
+            <s3_main>
+                <volumes>
+                    <main>
+                        <disk>s3_disk</disk>
+                    </main>
+                </volumes>
+            </s3_main>
+        </policies>
+    </storage_configuration>
+</clickhouse>

@@ -98,6 +98,9 @@ services:
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./clickhouse/s3_config.xml:/etc/clickhouse-server/config.d/s3_config.xml
+    depends_on:
+      - object-storage
 
   redis:
     container_name: redis
@@ -156,6 +159,7 @@ services:
       /bin/sh -c "
       until mc alias set local http://object-storage:9000 admin admin123; do sleep 2; done;
       mc mb --ignore-existing local/tournament-attachments;
+      mc mb --ignore-existing local/logs-archive;
       exit 0;
       "
   

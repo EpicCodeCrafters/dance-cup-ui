@@ -36,7 +36,7 @@
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(Timestamp)
 ORDER BY (Timestamp, TraceId, id)
-TTL toDateTime(Timestamp) + INTERVAL 15 MINUTE DELETE;
+TTL toDateTime(Timestamp) + INTERVAL 5 MINUTE DELETE;
 
 CREATE TABLE IF NOT EXISTS kafka_messages
 (
@@ -98,3 +98,46 @@ AS SELECT
    
 FROM kafka_messages
 WHERE length(value) > 0;
+
+CREATE TABLE IF NOT EXISTS logs_archive
+(
+    Timestamp DateTime64(6),
+    Level String,
+    MessageTemplate String,
+    RenderedMessage String,
+    TraceId String,
+    SpanId String,
+
+    ElapsedMilliseconds Nullable(Float64),
+    StatusCode Nullable(Int32),
+    ContentType Nullable(String),
+    ContentLength Nullable(Int32),
+    Protocol Nullable(String),
+    Method Nullable(String),
+    Scheme Nullable(String),
+    Host Nullable(String),
+    PathBase Nullable(String),
+    Path Nullable(String),
+    QueryString Nullable(String),
+    EventId_Id Nullable(Int32),
+    SourceContext Nullable(String),
+    RequestId Nullable(String),
+    RequestPath Nullable(String),
+    ConnectionId Nullable(String),
+    Service Nullable(String),
+    Environment Nullable(String),
+
+    _kafka_topic Nullable(String),
+    _kafka_partition Nullable(Int32),
+    _kafka_offset Nullable(UInt64),
+    _kafka_timestamp Nullable(DateTime64(3)),
+
+    id UUID
+)
+ENGINE = MergeTree()
+PARTITION BY toYYYYMM(Timestamp)
+ORDER BY (Timestamp, TraceId, id)
+SETTINGS storage_policy = 's3_main';
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS logs_to_archive TO logs_archive
+AS SELECT * FROM logs;
