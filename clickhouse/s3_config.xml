@@ -21,7 +21,6 @@
                         <disk>s3_disk</disk>
                     </cold>
                 </volumes>
-                <move_factor>0.1</move_factor>
             </logs_policy>
         </policies>
     </storage_configuration>
