@@ -12,13 +12,17 @@
             </s3_disk>
         </disks>
         <policies>
-            <s3_main>
+            <logs_policy>
                 <volumes>
-                    <main>
+                    <hot>
+                        <disk>default</disk>
+                    </hot>
+                    <cold>
                         <disk>s3_disk</disk>
-                    </main>
+                    </cold>
                 </volumes>
-            </s3_main>
+                <move_factor>0.1</move_factor>
+            </logs_policy>
         </policies>
     </storage_configuration>
 </clickhouse>

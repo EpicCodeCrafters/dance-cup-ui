@@ -1,32 +1,31 @@
 # ClickHouse Log Archiving to S3 (MinIO)
 
 ## Overview
-This setup implements automatic log archiving from ClickHouse to S3 (MinIO) storage with a 5-minute TTL for the main logs table.
+This setup implements automatic log archiving from ClickHouse to S3 (MinIO) storage using tiered storage with TTL. Logs are stored locally for fast access during the first 5 minutes, then automatically moved to S3 for archival. After 15 minutes total, logs are deleted.
 
 ## Architecture
 
 ### Components
 1. **Main Logs Table** (`logs`): 
    - Stores incoming logs from Kafka
-   - TTL: 5 minutes
-   - Storage: Local ClickHouse storage
-   
-2. **Archive Table** (`logs_archive`):
-   - Stores archived logs permanently
-   - Storage: S3 (MinIO) via storage policy `s3_main`
-   - Bucket: `logs-archive`
+   - Uses tiered storage policy (`logs_policy`)
+   - Local storage (hot): 0-5 minutes
+   - S3 storage (cold): 5-15 minutes
+   - TTL: Deleted after 15 minutes total
 
-3. **Materialized View** (`logs_to_archive`):
-   - Automatically archives all logs from Kafka to `logs_archive`
-   - Runs in real-time as logs arrive from Kafka
-   - Parallel to the main logs ingestion pipeline
+### Storage Tiers
+- **Hot Volume** (default disk): Logs from 0-5 minutes old
+- **Cold Volume** (s3_disk): Logs from 5-15 minutes old
 
 ### Data Flow
 ```
 Kafka (dance_cup_logs) 
   → kafka_messages (Kafka Engine) 
-    → kafka_messages_to_logs (Materialized View) → logs (MergeTree, TTL 5 min)
-    → logs_to_archive (Materialized View) → logs_archive (MergeTree on S3)
+    → kafka_messages_to_logs (Materialized View) 
+      → logs (MergeTree with tiered storage)
+        ├─ [0-5 min]: Local disk (hot)
+        ├─ [5-15 min]: S3 (cold) ← archived
+        └─ [>15 min]: Deleted
 ```
 
 ## Configuration
@@ -36,7 +35,9 @@ File: `clickhouse/s3_config.xml`
 - Endpoint: `http://object-storage:9000/logs-archive/`
 - Access Key: `admin`
 - Secret Key: `admin123`
-- Storage Policy: `s3_main`
+- Storage Policy: `logs_policy` with two volumes:
+  - `hot`: Local default disk
+  - `cold`: S3 disk
 
 ### MinIO Bucket
 Bucket `logs-archive` is automatically created by `object-storage-init` service in docker-compose.yml
@@ -44,31 +45,38 @@ Bucket `logs-archive` is automatically created by `object-storage-init` service 
 ## How It Works
 
 1. Logs are received from Kafka topic `dance_cup_logs`
-2. Two materialized views process the Kafka messages in parallel:
-   - `kafka_messages_to_logs`: Parses and inserts logs into the `logs` table (local storage)
-   - `logs_to_archive`: Parses and inserts logs into the `logs_archive` table (S3 storage)
-3. After 5 minutes, logs in the `logs` table are automatically deleted by TTL
-4. Archived logs remain permanently in S3 storage (MinIO)
+2. Materialized view `kafka_messages_to_logs` parses and inserts logs into the `logs` table
+3. For the first 5 minutes, logs remain on local fast storage (hot volume)
+4. After 5 minutes, ClickHouse automatically moves logs to S3 storage (cold volume) - **ARCHIVING**
+5. After 15 minutes total, logs are automatically deleted by TTL
+6. During the 5-15 minute window, archived logs remain accessible in S3
 
 ## Verification
 
 To verify the setup is working:
 
-1. Check that logs are being written to the main table:
+1. Check that logs are being written:
 ```sql
 SELECT count() FROM logs;
 ```
 
-2. Check that logs are being archived to S3:
+2. Check which volume logs are on:
 ```sql
-SELECT count() FROM logs_archive;
+SELECT 
+    disk_name,
+    count() as count,
+    formatReadableSize(sum(bytes_on_disk)) as size
+FROM system.parts
+WHERE table = 'logs' AND active
+GROUP BY disk_name;
 ```
 
-3. Access MinIO console at http://localhost:9001 (admin/admin123) and verify the `logs-archive` bucket contains data.
+3. Access MinIO console at http://localhost:9001 (admin/admin123) and verify the `logs-archive` bucket contains data after 5 minutes.
 
 ## Benefits
 
-- **Cost Efficiency**: Only recent logs (5 minutes) are stored in fast local storage
-- **Data Retention**: All logs are preserved permanently in S3
-- **Automatic**: No manual intervention required for archiving
-- **Scalable**: S3 storage can grow indefinitely without impacting ClickHouse performance
+- **Performance**: Recent logs (0-5 minutes) are on fast local storage for quick queries
+- **Cost Efficiency**: Older logs (5-15 minutes) are automatically moved to cheaper S3 storage
+- **Data Retention**: Logs are retained for 15 minutes total with automatic archiving
+- **Transparent**: Applications query the same `logs` table, ClickHouse handles the storage tiers automatically
+- **Automatic**: No manual intervention required for archiving or cleanup
