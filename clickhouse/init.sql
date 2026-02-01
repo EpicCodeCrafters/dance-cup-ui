@@ -36,10 +36,10 @@
 ENGINE = MergeTree()
 PARTITION BY toYYYYMM(Timestamp)
 ORDER BY (Timestamp, TraceId, id)
-SETTINGS storage_policy = 'logs_policy'
 TTL 
     toDateTime(Timestamp) + INTERVAL 5 MINUTE TO VOLUME 'cold',
-    toDateTime(Timestamp) + INTERVAL 15 MINUTE DELETE;
+    toDateTime(Timestamp) + INTERVAL 15 MINUTE DELETE
+SETTINGS storage_policy = 'logs_policy';
 
 CREATE TABLE IF NOT EXISTS kafka_messages
 (
