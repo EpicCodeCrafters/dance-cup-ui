@@ -1,43 +1,41 @@
 # ClickHouse Log Archiving to S3 (MinIO)
 
 ## Overview
-This setup implements automatic log archiving from ClickHouse to S3 (MinIO) storage using tiered storage with TTL. Logs are stored locally for fast access during the first 5 minutes, then automatically moved to S3 for archival. After 15 minutes total, logs are deleted.
+This setup implements automatic log archiving from ClickHouse to S3 (MinIO) storage using the S3 table engine. Logs are written to both local storage (for fast queries) and S3 (for permanent archival) simultaneously. Local logs are deleted after 15 minutes.
 
 ## Architecture
 
 ### Components
 1. **Main Logs Table** (`logs`): 
    - Stores incoming logs from Kafka
-   - Uses tiered storage policy (`logs_policy`)
-   - Local storage (hot): 0-5 minutes
-   - S3 storage (cold): 5-15 minutes
-   - TTL: Deleted after 15 minutes total
+   - Storage: Local ClickHouse storage
+   - TTL: 15 minutes (deleted after)
+   
+2. **Archive Table** (`logs_archive`):
+   - Stores archived logs permanently in S3/MinIO
+   - Uses S3 table engine
+   - Storage: S3 (MinIO) bucket `logs-archive`
+   - Retention: Permanent (no TTL)
 
-### Storage Tiers
-- **Hot Volume** (default disk): Logs from 0-5 minutes old
-- **Cold Volume** (s3_disk): Logs from 5-15 minutes old
+3. **Materialized Views**:
+   - `kafka_messages_to_logs`: Writes logs from Kafka to local `logs` table
+   - `logs_to_archive`: Writes logs from Kafka to S3 `logs_archive` table
 
 ### Data Flow
 ```
 Kafka (dance_cup_logs) 
   → kafka_messages (Kafka Engine) 
-    → kafka_messages_to_logs (Materialized View) 
-      → logs (MergeTree with tiered storage)
-        ├─ [0-5 min]: Local disk (hot)
-        ├─ [5-15 min]: S3 (cold) ← archived
-        └─ [>15 min]: Deleted
+    ├─→ kafka_messages_to_logs (MV) → logs (MergeTree, local, TTL 15 min)
+    └─→ logs_to_archive (MV) → logs_archive (S3 engine, permanent)
 ```
 
 ## Configuration
 
-### S3 Storage Configuration
-File: `clickhouse/s3_config.xml`
-- Endpoint: `http://object-storage:9000/logs-archive/`
-- Access Key: `admin`
-- Secret Key: `admin123`
-- Storage Policy: `logs_policy` with two volumes:
-  - `hot`: Local default disk
-  - `cold`: S3 disk
+### S3 Table Configuration
+The `logs_archive` table uses the S3 engine:
+- Endpoint: `http://object-storage:9000/logs-archive/{_partition_id}.parquet`
+- Format: Parquet (optimized for storage)
+- Credentials: admin/admin123
 
 ### MinIO Bucket
 Bucket `logs-archive` is automatically created by `object-storage-init` service in docker-compose.yml
@@ -45,38 +43,33 @@ Bucket `logs-archive` is automatically created by `object-storage-init` service 
 ## How It Works
 
 1. Logs are received from Kafka topic `dance_cup_logs`
-2. Materialized view `kafka_messages_to_logs` parses and inserts logs into the `logs` table
-3. For the first 5 minutes, logs remain on local fast storage (hot volume)
-4. After 5 minutes, ClickHouse automatically moves logs to S3 storage (cold volume) - **ARCHIVING**
-5. After 15 minutes total, logs are automatically deleted by TTL
-6. During the 5-15 minute window, archived logs remain accessible in S3
+2. Two materialized views process logs in parallel:
+   - `kafka_messages_to_logs`: Writes to local `logs` table (fast queries, 15 min retention)
+   - `logs_to_archive`: Writes to S3 `logs_archive` table (permanent archival)
+3. After 15 minutes, logs in the local `logs` table are automatically deleted by TTL
+4. Archived logs remain permanently accessible in S3 via the `logs_archive` table
 
 ## Verification
 
 To verify the setup is working:
 
-1. Check that logs are being written:
+1. Check that logs are being written to the local table:
 ```sql
 SELECT count() FROM logs;
 ```
 
-2. Check which volume logs are on:
+2. Check that logs are being archived to S3:
 ```sql
-SELECT 
-    disk_name,
-    count() as count,
-    formatReadableSize(sum(bytes_on_disk)) as size
-FROM system.parts
-WHERE table = 'logs' AND active
-GROUP BY disk_name;
+SELECT count() FROM logs_archive;
 ```
 
-3. Access MinIO console at http://localhost:9001 (admin/admin123) and verify the `logs-archive` bucket contains data after 5 minutes.
+3. Access MinIO console at http://localhost:9001 (admin/admin123) and verify the `logs-archive` bucket contains Parquet files.
 
 ## Benefits
 
-- **Performance**: Recent logs (0-5 minutes) are on fast local storage for quick queries
-- **Cost Efficiency**: Older logs (5-15 minutes) are automatically moved to cheaper S3 storage
-- **Data Retention**: Logs are retained for 15 minutes total with automatic archiving
-- **Transparent**: Applications query the same `logs` table, ClickHouse handles the storage tiers automatically
-- **Automatic**: No manual intervention required for archiving or cleanup
+- **Immediate Archiving**: All logs are written to S3 immediately
+- **Fast Queries**: Recent logs (last 15 minutes) available on local storage for fast queries
+- **Permanent Retention**: All logs preserved indefinitely in S3
+- **Cost-Effective**: S3 storage is cheaper than local storage for long-term retention
+- **Transparent**: Query either table depending on your needs (recent vs historical logs)
+- **Reliable**: Uses native S3 table engine instead of tiered storage
