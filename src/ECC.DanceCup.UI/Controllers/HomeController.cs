@@ -253,9 +253,9 @@ public class HomeController : Controller
     {
         ViewBag.TournamentId = id;
         
-        var result = await _apiClient.GetTournamentsAsync(new GetTournamentsRequest{PageNumber = 1, PageSize = 1, UserId = 1}, HttpContext.RequestAborted);
+        var result = await _apiClient.GetTournamentAsync(new GetTournamentRequest{TournamentId = id}, HttpContext.RequestAborted);
 
-        var categories = result.Value.Tournaments.Where(tournament => tournament.Id == id).ToList()[0].Categories;
+        var categories = result.Value.Categories;
         
         ViewBag.Categories = categories;
         

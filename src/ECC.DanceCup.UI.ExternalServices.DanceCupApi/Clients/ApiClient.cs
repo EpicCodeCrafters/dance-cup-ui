@@ -41,6 +41,20 @@ public class ApiClient : IApiClient
         }
     }
 
+    public async Task<Result<GetTournamentResponse>> GetTournamentAsync(GetTournamentRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await _client.GetTournamentAsync(request, cancellationToken: cancellationToken);
+            
+            return response;
+        }
+        catch (RpcException)
+        {
+            return Result.Fail("Не удалось получить турнир");
+        }
+    }
+    
     public async Task<Result<CreateTournamentResponse>> CreateTournamentAsync(CreateTournamentRequest request, CancellationToken cancellationToken)
     {
         try
