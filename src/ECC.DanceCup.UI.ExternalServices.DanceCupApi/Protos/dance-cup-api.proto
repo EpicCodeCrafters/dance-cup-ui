@@ -162,7 +162,7 @@ message ReopenTournamentRegistrationResponse { }
 
 message RegisterCoupleForTournamentRequest {
     int64 tournament_id = 1;
-    string first_participant_full_name = 2;
+    google.protobuf.StringValue first_participant_full_name = 2;
     google.protobuf.StringValue second_participant_full_name = 3;
     google.protobuf.StringValue dance_organization_name = 4;
     google.protobuf.StringValue first_trainer_full_name = 5;

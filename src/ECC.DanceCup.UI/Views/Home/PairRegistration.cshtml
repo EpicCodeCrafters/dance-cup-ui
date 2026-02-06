@@ -4,15 +4,15 @@
 
 <div class="container-fluid">
     <h1>Регистрация пары на турнир</h1>
-    <form asp-action="RegisterCouple" method="post">
+    <form asp-action="RegisterCouple" method="post" id="registerForm">
         <input type="hidden" name="tournamentId" value="@ViewBag.TournamentId" />
         <div class="form-group">
             <label>Имя партнёра</label>
-            <input type="text" class="form-control" name="firstParticipantFullName" required>
+            <input type="text" class="form-control" name="firstParticipantFullName" id="firstParticipant">
         </div>
         <div class="form-group">
             <label>Имя партнёрши</label>
-            <input type="text" class="form-control" name="secondParticipantFullName">
+            <input type="text" class="form-control" name="secondParticipantFullName" id="secondParticipant">
         </div>
         <div class="form-group">
             <label>Название танцевальной организации</label>
@@ -42,3 +42,16 @@
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
 </div>
+
+<script>
+    // Скрипт внизу страницы — работает после загрузки DOM-элементов формы
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        const first = document.getElementById('firstParticipant').value.trim();
+        const second = document.getElementById('secondParticipant').value.trim();
+
+        if (!first && !second) {
+            e.preventDefault();
+            alert('Необходимо заполнить имя партнёра или партнёрши');
+        }
+    });
+</script>
