@@ -1,0 +1,158 @@
+groups:
+  - name: aspnetcore-base
+    interval: 30s
+    rules:
+      
+      # =============================
+      # Availability
+      # =============================
+      - alert: ServiceDown
+        expr: sum by (service) (up{job="aspnet"}) == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.service }} is down"
+          description: "Prometheus не может собрать метрики с сервиса {{ $labels.service }}"
+      
+      # =============================
+      # HTTP errors
+      # =============================
+      - alert: HighHttp5xxRate
+        expr: |
+          (
+            sum by (service) (rate(http_requests_received_total{code=~"5.."}[1m]))
+            /
+            sum by (service) (rate(http_requests_received_total[1m]))
+          ) > 0.05
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "High HTTP 5xx rate for {{ $labels.service }}"
+          description: "Более 5% HTTP запросов завершаются 5xx в сервисе {{ $labels.service }}"
+
+      - alert: HighHttp4xxRate
+        expr: |
+          sum by (service) (rate(http_requests_received_total{code=~"4.."}[5m])) > 5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 4xx rate for {{ $labels.service }}"
+          description: "Повышенное количество 4xx ответов в сервисе {{ $labels.service }}"
+      
+      # =============================
+      # gRPC
+      # =============================
+      - alert: HighGrpcErrorRate
+        expr: |
+          (
+            sum by (service) (rate(grpc_server_handled_total{grpc_code!="OK"}[1m]))
+            /
+            sum by (service) (rate(grpc_server_handled_total[1m]))
+          ) > 0.05
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "High gRPC error rate for {{ $labels.service }}"
+          description: "Более 5% gRPC вызовов завершаются ошибкой в сервисе {{ $labels.service }}"
+
+      - alert: HighGrpcLatencyP95
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (service, le) (
+              rate(grpc_server_handling_seconds_bucket[5m])
+            )
+          ) > 0.5
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High gRPC P95 latency for {{ $labels.service }}"
+          description: "95% gRPC-вызовов в сервисе {{ $labels.service }} занимают более 0.5s"
+      
+      # =============================
+      # HTTP latency
+      # =============================
+      - alert: HighRequestLatencyP95
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (service, le) (
+              rate(http_request_duration_seconds_bucket[5m])
+            )
+          ) > 1
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High P95 latency for {{ $labels.service }}"
+          description: "95% запросов в сервисе {{ $labels.service }} выполняются дольше 1s"
+      
+      # =============================
+      # Traffic
+      # =============================
+      - alert: TrafficDrop
+        expr: |
+          sum by (service) (rate(http_requests_received_total[1m]))
+          <
+          sum by (service) (rate(http_requests_received_total[5m])) * 0.3
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Traffic drop for {{ $labels.service }}"
+          description: "Резкое падение входящего трафика в сервисе {{ $labels.service }}"
+      
+      # =============================
+      # Cache
+      # =============================
+      - alert: SingleDanceCacheMiss
+        expr: |
+          increase(dance_cache_misses_count[5m]) > 0
+        for: 30s
+        labels:
+          severity: notice
+        annotations:
+          summary: "Dance cache miss in {{ $labels.service }}"
+          description: "За последние 5 минут зафиксирован промах кэша танцев в сервисе {{ $labels.service }}"
+      
+      # =============================
+      # .NET runtime
+      # =============================
+      - alert: FrequentGen2Gc
+        expr: |
+          rate(dotnet_gc_collections_total{generation="2"}[5m]) > 0.5
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Frequent Gen2 GC in {{ $labels.service }}"
+          description: "Частые сборки мусора Gen2 в сервисе {{ $labels.service }}"
+
+      - alert: ThreadPoolStarvation
+        expr: |
+          dotnet_threadpool_queue_length > 100
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "ThreadPool starvation in {{ $labels.service }}"
+          description: "Очередь ThreadPool превышает 100 в сервисе {{ $labels.service }}"
+      
+      # =============================
+      # Healthchecks
+      # =============================
+      - alert: HealthcheckUnhealthy
+        expr: |
+          sum by (service) (healthcheck_up == 0) > 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Healthcheck failed for {{ $labels.service }}"
+          description: "Healthcheck сообщает о проблеме в сервисе {{ $labels.service }}"
+

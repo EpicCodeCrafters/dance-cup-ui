@@ -14,3 +14,18 @@ scrape_configs:
       - targets: ['dance-cup-auth:81']
         labels:
           service: 'dance-cup-auth'
+          
+  - job_name: 'dance-cup-ui'
+    static_configs:
+      - targets: ['host.docker.internal:5215']
+        labels:
+          service: 'dance-cup-ui'
+
+rule_files:
+  - alert.rules.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093

@@ -174,7 +174,7 @@ services:
       ObjectStorage__AccessKey: "admin"
       ObjectStorage__SecretKey: "admin123"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 60
+      CachingOptions__ExpirationMinutes: 1
       KafkaOptions__BootstrapServers: "kafka1:29092,kafka2:29093,kafka3:29094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -200,7 +200,7 @@ services:
       ObjectStorage__AccessKey: "admin"
       ObjectStorage__SecretKey: "admin123"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 60
+      CachingOptions__ExpirationMinutes: 1
       KafkaOptions__BootstrapServers: "kafka1:29092,kafka2:29093,kafka3:29094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -225,7 +225,7 @@ services:
       ObjectStorage__AccessKey: "admin"
       ObjectStorage__SecretKey: "admin123"
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 60
+      CachingOptions__ExpirationMinutes: 1
       KafkaOptions__BootstrapServers: "kafka1:29092,kafka2:29093,kafka3:29094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -250,7 +250,7 @@ services:
       ObjectStorage__AccessKey: "admin"
       ObjectStorage__SecretKey: "admin123"      
       CachingOptions__ConnectionString: "redis:6379"
-      CachingOptions__ExpirationMinutes: 60
+      CachingOptions__ExpirationMinutes: 1
       KafkaOptions__BootstrapServers: "kafka1:29092,kafka2:29093,kafka3:29094"
       KafkaOptions__Topics__DanceCupEvents__Name: "dance_cup_events"
       KafkaOptions__Topics__DanceCupEvents__ConsumerGroup: "dance-cup-api"
@@ -304,6 +304,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
       - prometheus-data:/prometheus
     command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
 
@@ -318,6 +319,15 @@ services:
       - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
       - grafana-data:/var/lib/grafana
+        
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+    ports:
+      - "19093:9093"
 
 volumes:
   dance-cup-api-db-volume:
