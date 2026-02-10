@@ -44,14 +44,25 @@
 </div>
 
 <script>
-    // Скрипт внизу страницы — работает после загрузки DOM-элементов формы
     document.getElementById('registerForm').addEventListener('submit', function (e) {
-        const first = document.getElementById('firstParticipant').value.trim();
-        const second = document.getElementById('secondParticipant').value.trim();
+        const firstInput  = document.getElementById('firstParticipant');
+        const secondInput = document.getElementById('secondParticipant');
 
+        const first  = firstInput.value.trim();
+        const second = secondInput.value.trim();
+
+        // Если оба пустые — не отправляем
         if (!first && !second) {
             e.preventDefault();
             alert('Необходимо заполнить имя партнёра или партнёрши');
+            return;
+        }
+
+        // Если первый пуст, а второй заполнен — перенос
+        if (!first && second) {
+            firstInput.value  = second;
+            secondInput.value = '';
         }
     });
 </script>
+
