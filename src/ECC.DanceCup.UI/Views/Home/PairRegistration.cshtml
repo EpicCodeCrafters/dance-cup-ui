@@ -4,15 +4,15 @@
 
 <div class="container-fluid">
     <h1>Регистрация пары на турнир</h1>
-    <form asp-action="RegisterCouple" method="post">
+    <form asp-action="RegisterCouple" method="post" id="registerForm">
         <input type="hidden" name="tournamentId" value="@ViewBag.TournamentId" />
         <div class="form-group">
             <label>Имя партнёра</label>
-            <input type="text" class="form-control" name="firstParticipantFullName" required>
+            <input type="text" class="form-control" name="firstParticipantFullName" id="firstParticipant">
         </div>
         <div class="form-group">
             <label>Имя партнёрши</label>
-            <input type="text" class="form-control" name="secondParticipantFullName">
+            <input type="text" class="form-control" name="secondParticipantFullName" id="secondParticipant">
         </div>
         <div class="form-group">
             <label>Название танцевальной организации</label>
@@ -42,3 +42,27 @@
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        const firstInput  = document.getElementById('firstParticipant');
+        const secondInput = document.getElementById('secondParticipant');
+
+        const first  = firstInput.value.trim();
+        const second = secondInput.value.trim();
+
+        // Если оба пустые — не отправляем
+        if (!first && !second) {
+            e.preventDefault();
+            alert('Необходимо заполнить имя партнёра или партнёрши');
+            return;
+        }
+
+        // Если первый пуст, а второй заполнен — перенос
+        if (!first && second) {
+            firstInput.value  = second;
+            secondInput.value = '';
+        }
+    });
+</script>
+
